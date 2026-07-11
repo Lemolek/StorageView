@@ -63,7 +63,7 @@ export function SettingsPage() {
         <Card>
           <h2 className="text-base font-medium">Appearance</h2>
           <p className="mt-1 text-sm text-muted">
-            Choose how DiskScope looks on this device.
+            Choose how StorageView looks on this device.
           </p>
           <div className="mt-4 flex gap-2">
             {themeOptions.map((option) => (
@@ -180,7 +180,7 @@ export function SettingsPage() {
         <Card>
           <h2 className="text-base font-medium">Privacy</h2>
           <p className="mt-1 text-sm text-muted">
-            Telemetry is disabled. DiskScope works entirely locally and never
+            Telemetry is disabled. StorageView works entirely locally and never
             uploads file paths, filenames or scan results.
           </p>
         </Card>
@@ -188,10 +188,10 @@ export function SettingsPage() {
           <h2 className="text-base font-medium">About</h2>
           <div className="mt-3 space-y-1 text-sm text-muted">
             <p className="text-foreground">
-              {appInfo?.name ?? "DiskScope"}
+              {appInfo?.name ?? "StorageView"}
               {appInfo ? ` ${appInfo.version}` : ""}
             </p>
-            <p>{appInfo?.tagline ?? "Advanced Storage Analyzer"}</p>
+            <p>{appInfo?.tagline ?? "Analyze. Visualize. Optimize."}</p>
             <p>Created by Lemolek</p>
             <p>Copyright © 2026 Lemolek. All rights reserved.</p>
           </div>

@@ -28,7 +28,7 @@ export function ReportsPage() {
         : buildScanReportCsv(result);
     try {
       const saved = await saveReportAs(
-        `diskscope-report-${date}.${format}`,
+        `storageview-report-${date}.${format}`,
         contents,
         format,
       );

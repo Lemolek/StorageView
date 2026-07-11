@@ -5,7 +5,7 @@ import { navItems } from "@/app/navigation";
 import { useScanStore } from "@/features/storage/scanStore";
 import { useAppInfo } from "@/hooks/useAppInfo";
 import { cn } from "@/lib/utils/cn";
-import brandIcon from "../../../assets/brand/diskscope-icon.svg";
+import brandIcon from "../../../assets/brand/storageview-icon.svg";
 
 export function Sidebar() {
   const { theme, toggleTheme } = useTheme();
@@ -18,10 +18,10 @@ export function Sidebar() {
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-surface">
       <div className="flex items-center gap-3 px-5 py-5">
-        <img src={brandIcon} alt="DiskScope" className="h-9 w-9 rounded-lg" />
+        <img src={brandIcon} alt="StorageView" className="h-9 w-9 rounded-lg" />
         <div className="min-w-0">
-          <p className="text-sm font-semibold tracking-tight">DiskScope</p>
-          <p className="truncate text-xs text-muted">Advanced Storage Analyzer</p>
+          <p className="text-sm font-semibold tracking-tight">StorageView</p>
+          <p className="truncate text-xs text-muted">Analyze. Visualize. Optimize.</p>
         </div>
       </div>
       <nav className="flex-1 space-y-1 px-3 py-2" aria-label="Primary">

@@ -30,7 +30,7 @@ export function DashboardPage() {
         <EmptyState
           icon={LayoutDashboard}
           title="Desktop application required"
-          description="Storage information is available when DiskScope runs as a desktop application."
+          description="Storage information is available when StorageView runs as a desktop application."
         />
       </>
     );

@@ -12,9 +12,9 @@ pub struct AppInfo {
 #[tauri::command]
 pub fn get_app_info() -> AppInfo {
     AppInfo {
-        name: "DiskScope".to_string(),
+        name: "StorageView".to_string(),
         version: env!("CARGO_PKG_VERSION").to_string(),
         author: "Lemolek".to_string(),
-        tagline: "Advanced Storage Analyzer".to_string(),
+        tagline: "Analyze. Visualize. Optimize.".to_string(),
     }
 }

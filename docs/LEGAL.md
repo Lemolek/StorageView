@@ -1,0 +1,11 @@
+# Legal notice
+
+Copyright © 2026 Lemolek. All rights reserved.
+
+The StorageView name, logo, visual assets, source code, documentation and compiled binaries are proprietary works owned by Lemolek unless a file explicitly states otherwise.
+
+No permission is granted to copy, modify, distribute, sublicense, sell, publish, host, mirror, rebrand or create derivative works from this project without prior written permission from Lemolek.
+
+Viewing source code in a public repository does not grant a license to use or redistribute it. Third-party dependencies remain subject to their respective licenses.
+
+This software is provided without warranty to the maximum extent permitted by applicable law.

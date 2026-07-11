@@ -112,7 +112,7 @@ export const useCleanupStore = create<CleanupStore>()(
       },
     }),
     {
-      name: "diskscope.cleanup-queue",
+      name: "storageview.cleanup-queue",
       partialize: (state) => ({ items: state.items }),
     },
   ),

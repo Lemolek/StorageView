@@ -1,6 +1,6 @@
-# Building and Releasing DiskScope
+# Building and Releasing StorageView
 
-DiskScope is a single desktop application. The React UI is embedded in the Tauri WebView and all filesystem operations run in the Rust backend through Tauri commands. There is no separate backend server and no HTTP API.
+StorageView is a single desktop application. The React UI is embedded in the Tauri WebView and all filesystem operations run in the Rust backend through Tauri commands. There is no separate backend server and no HTTP API.
 
 ## Prerequisites
 
@@ -53,11 +53,11 @@ npm run tauri build
 
 Bundles are written under `src-tauri/target/release/bundle/`, depending on the platform the build runs on:
 
-- Windows: NSIS installer (`nsis/DiskScope_<version>_x64-setup.exe`) and MSI package (`msi/`)
-- macOS: application bundle (`macos/DiskScope.app`) and disk image (`dmg/`), built as a universal binary for Apple Silicon and Intel
+- Windows: NSIS installer (`nsis/StorageView_<version>_x64-setup.exe`) and MSI package (`msi/`)
+- macOS: application bundle (`macos/StorageView.app`) and disk image (`dmg/`), built as a universal binary for Apple Silicon and Intel
 - Linux: `deb/`, `rpm/` and `appimage/` packages
 
-On Windows the installer is produced by the NSIS bundler configured in `src-tauri/tauri.conf.json`. It installs per user, uses the DiskScope icon and shows the license during installation. If a signing certificate is configured, the executable and the installer are signed automatically. See [CODE_SIGNING.md](CODE_SIGNING.md).
+On Windows the installer is produced by the NSIS bundler configured in `src-tauri/tauri.conf.json`. It installs per user, uses the StorageView icon and shows the license during installation. If a signing certificate is configured, the executable and the installer are signed automatically. See [CODE_SIGNING.md](CODE_SIGNING.md).
 
 ## Versioning
 

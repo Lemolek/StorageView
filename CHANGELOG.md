@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0
+
+Rebrand release.
+
+- Product renamed to StorageView
+- New brand identity and icons
+- Bundle identifier changed to `com.lemolek.storageview` with automatic settings migration
+- Repository renamed to StorageView
+
 ## 0.5.0
 
 Multi-platform release.

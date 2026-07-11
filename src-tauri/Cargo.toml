@@ -1,13 +1,13 @@
 [package]
-name = "diskscope"
-version = "0.5.0"
-description = "DiskScope — Advanced Storage Analyzer"
+name = "storageview"
+version = "0.6.0"
+description = "StorageView — Analyze. Visualize. Optimize."
 authors = ["Lemolek"]
 license = "SEE LICENSE IN LICENSE"
 edition = "2021"
 
 [lib]
-name = "diskscope_lib"
+name = "storageview_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

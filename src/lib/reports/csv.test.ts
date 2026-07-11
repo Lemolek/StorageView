@@ -54,7 +54,7 @@ describe("buildScanReportCsv", () => {
 
   it("contains header, sections and escaped values", () => {
     const csv = buildScanReportCsv(result);
-    expect(csv).toContain("DiskScope Scan Report");
+    expect(csv).toContain("StorageView Scan Report");
     expect(csv).toContain("Largest Files");
     expect(csv).toContain("Largest Folders");
     expect(csv).toContain("File Types");

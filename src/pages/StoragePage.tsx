@@ -38,7 +38,7 @@ export function StoragePage() {
         <EmptyState
           icon={HardDrive}
           title="Desktop application required"
-          description="Drive information and scanning are available when DiskScope runs as a desktop application."
+          description="Drive information and scanning are available when StorageView runs as a desktop application."
         />
       </>
     );

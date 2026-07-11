@@ -1,8 +1,8 @@
 {
-  "name": "diskscope",
+  "name": "storageview",
   "private": true,
-  "version": "0.5.0",
-  "description": "DiskScope — Advanced Storage Analyzer",
+  "version": "0.6.0",
+  "description": "StorageView — Analyze. Visualize. Optimize.",
   "author": "Lemolek",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",

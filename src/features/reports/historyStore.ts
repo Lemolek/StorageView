@@ -48,6 +48,6 @@ export const useHistoryStore = create<HistoryStore>()(
         set({ entries: [] });
       },
     }),
-    { name: "diskscope.scan-history" },
+    { name: "storageview.scan-history" },
   ),
 );

@@ -1,38 +1,61 @@
-# DiskScope Brand Assets
+# StorageView Brand Assets
 
 Author: **Lemolek**
-Product: **DiskScope**
-Tagline: **Advanced Storage Analyzer**
+Product: **StorageView**
+Tagline: **Analyze. Visualize. Optimize.**
 
 ## Files
 
-- `assets/brand/diskscope-logo-dark.svg` — full logo for dark backgrounds.
-- `assets/brand/diskscope-logo-light.svg` — full logo for light backgrounds.
-- `assets/brand/diskscope-icon.svg` — app icon SVG.
-- `assets/brand/diskscope-icon-monochrome.svg` — monochrome/currentColor icon for UI use.
-- `assets/brand/diskscope-wordmark.svg` — wordmark without icon.
+All assets live in `assets/brand/`:
+
+- `storageview-icon.svg` — canonical app icon (dark tile); imported by the application sidebar.
+- `storageview-icon-dark.svg` — app icon on a dark tile, for dark backgrounds.
+- `storageview-icon-light.svg` — app icon on a light tile, for light backgrounds.
+- `storageview-icon-monochrome-dark.svg` — monochrome icon variant for dark UI contexts.
+- `storageview-icon-monochrome-light.svg` — monochrome icon variant for light UI contexts.
+- `storageview-icon-transparent.svg` — icon mark without a background tile, for overlays and composites.
+- `storageview-wordmark-dark.svg` — full wordmark (icon, name, tagline) for dark backgrounds.
+- `storageview-wordmark-light.svg` — full wordmark (icon, name, tagline) for light backgrounds.
+- `storageview-wordmark-transparent.svg` — wordmark without a background tile.
+- `storageview-wordmark-dark-1400x360.png` — raster wordmark for dark backgrounds (README header, previews).
+- `storageview-wordmark-light-1400x360.png` — raster wordmark for light backgrounds.
+
+The Tauri icon set in `src-tauri/icons/` is generated from `storageview-app-icon-1024.png` with `npx tauri icon`; do not edit those files by hand.
 
 ## Usage Rules
 
-Use the SVG assets directly in the app and README.
-
-Preferred placements:
-
-- Sidebar header: `diskscope-icon.svg` + `DiskScope`
-- README header: `diskscope-logo-dark.svg` or `diskscope-logo-light.svg`
-- App icon source: `diskscope-icon.svg`
-- UI inline icon: `diskscope-icon-monochrome.svg`
+- Sidebar header: `storageview-icon.svg` + the product name.
+- README header: `storageview-wordmark-dark-1400x360.png` (or the light variant on light pages).
+- UI inline icon: the monochrome variant matching the surrounding theme.
+- Keep clear space around the mark of at least 12.5% of the icon width on every side.
+- Do not stretch, skew, rotate or recolor the assets. Raster assets must never be recolored.
+- Do not place the dark-tile assets on dark backgrounds or the light-tile assets on light backgrounds.
 
 ## Brand Colors
 
+Dark (noir) theme:
+
 ```txt
-Background: #0B0F14
-Surface:    #131A22
-Card:       #1A232D
-Border:     #293442
-Text:       #F2F5F7
-Muted:      #9AA5B1
-Primary:    #3B82F6
+Background: #050505
+Surface:    #0B0B0B
+Card:       #111111
+Border:     #262626
+Text:       #FFFFFF
+Muted:      #A1A1AA
+Accent:     #7C5CFF
+Accent Alt: #00E5FF
+```
+
+Light theme:
+
+```txt
+Background: #FAFAFA
+Surface:    #FFFFFF
+Border:     #E4E4E7
+Text:       #09090B
+Muted:      #71717A
+Accent:     #6947FF
+Accent Alt: #007A8A
 ```
 
 ## Typography
@@ -44,6 +67,6 @@ Use **Inter** or **Geist**. Avoid casual, decorative, gaming, handwritten, or ov
 Use this notice in the app About page, README footer, and generated documentation:
 
 ```txt
-DiskScope © 2026 Lemolek. All rights reserved.
+Copyright © 2026 Lemolek. All rights reserved.
 Unauthorized copying, distribution, modification, sublicensing, or commercial use is prohibited unless explicitly permitted by the author.
 ```

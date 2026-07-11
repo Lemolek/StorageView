@@ -1,8 +1,12 @@
-# DiskScope
+<p align="center">
+  <img src="assets/brand/storageview-wordmark-dark-1400x360.png" alt="StorageView" width="560" />
+</p>
 
-Advanced Storage Analyzer
+# StorageView
 
-DiskScope is a professional desktop application for storage analysis, visualization and safe cleanup.
+Analyze. Visualize. Optimize.
+
+StorageView is a professional desktop application for storage analysis, visualization and safe cleanup.
 
 Created by Lemolek.
 
@@ -33,7 +37,7 @@ Created by Lemolek.
 
 ## Architecture
 
-DiskScope is a single desktop application distributed as a Windows installer:
+StorageView is a single desktop application distributed as a Windows installer:
 
 - The React UI is embedded in the Tauri WebView and ships inside the executable.
 - All filesystem operations — scanning, cleanup, disk information, opening paths — run in the Rust backend.
@@ -81,14 +85,16 @@ Build the installers for the current platform:
 npm run tauri build
 ```
 
-On Windows the NSIS installer is written to `src-tauri/target/release/bundle/nsis/DiskScope_<version>_x64-setup.exe`.
+On Windows the NSIS installer is written to `src-tauri/target/release/bundle/nsis/StorageView_<version>_x64-setup.exe`.
 
 Releases are automated with GitHub Actions: pushing a `v*` tag builds Windows (NSIS installer), macOS (universal `.dmg`) and Linux (`.deb`/`.rpm`/`.AppImage`) artifacts, signs the Windows installer when signing secrets are configured and uploads everything to a single draft GitHub release. See [docs/BUILDING.md](docs/BUILDING.md) and [docs/CODE_SIGNING.md](docs/CODE_SIGNING.md).
+
+Repository: [github.com/Lemolek/StorageView](https://github.com/Lemolek/StorageView)
 
 ## Repository Structure
 
 ```text
-DiskScope/
+StorageView/
 ├── src/                 React frontend
 │   ├── app/             App shell, routing, providers
 │   ├── components/      Reusable UI components

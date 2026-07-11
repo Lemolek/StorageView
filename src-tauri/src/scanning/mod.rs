@@ -424,7 +424,7 @@ mod tests {
 
     #[test]
     fn collect_extension_files_finds_matching_files_by_size() {
-        let root = std::env::temp_dir().join("diskscope-test-ext-collect");
+        let root = std::env::temp_dir().join("storageview-test-ext-collect");
         let nested = root.join("nested");
         fs::create_dir_all(&nested).unwrap();
         fs::write(root.join("small.log"), vec![0u8; 10]).unwrap();

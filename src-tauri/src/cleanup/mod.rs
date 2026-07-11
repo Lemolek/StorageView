@@ -483,7 +483,7 @@ mod tests {
 
     #[test]
     fn directory_size_sums_nested_files() {
-        let root = std::env::temp_dir().join("diskscope-test-dir-size");
+        let root = std::env::temp_dir().join("storageview-test-dir-size");
         let nested = root.join("nested");
         fs::create_dir_all(&nested).unwrap();
         fs::write(root.join("a.bin"), vec![0u8; 100]).unwrap();

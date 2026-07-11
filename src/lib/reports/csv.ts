@@ -17,7 +17,7 @@ export function toCsv(rows: (string | number | null | undefined)[][]): string {
 
 export function buildScanReportCsv(result: ScanResult): string {
   const rows: (string | number | null | undefined)[][] = [
-    ["DiskScope Scan Report"],
+    ["StorageView Scan Report"],
     ["Root path", result.rootPath],
     ["Total files", result.totalFiles],
     ["Total directories", result.totalDirectories],

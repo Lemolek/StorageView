@@ -9,7 +9,7 @@ import {
 
 export type Theme = "dark" | "light";
 
-const THEME_STORAGE_KEY = "diskscope.theme";
+const THEME_STORAGE_KEY = "storageview.theme";
 
 interface ThemeContextValue {
   theme: Theme;

@@ -11,6 +11,10 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .manage(std::sync::Arc::new(scanning::ScanState::default()))
+        .setup(|app| {
+            core::migration::migrate_legacy_app_data(app.handle());
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             commands::app::get_app_info,
             commands::system::list_disks,
@@ -26,5 +30,5 @@ pub fn run() {
             commands::reports::save_report
         ])
         .run(tauri::generate_context!())
-        .expect("error while running DiskScope");
+        .expect("error while running StorageView");
 }

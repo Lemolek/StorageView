@@ -44,6 +44,6 @@ export const useSettingsStore = create<SettingsStore>()(
         set({ advancedCleanupUnlocked: false });
       },
     }),
-    { name: "diskscope.settings" },
+    { name: "storageview.settings" },
   ),
 );

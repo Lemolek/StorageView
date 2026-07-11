@@ -2,7 +2,7 @@
 
 ## Principles
 
-DiskScope is designed around user safety:
+StorageView is designed around user safety:
 
 - No file is deleted without explicit user confirmation.
 - Moving files to the system trash is the preferred cleanup action.
@@ -14,7 +14,7 @@ DiskScope is designed around user safety:
 
 ## Privacy
 
-- DiskScope works entirely locally. There is no cloud dependency.
+- StorageView works entirely locally. There is no cloud dependency.
 - No telemetry or analytics are collected by default.
 - File paths, filenames and scan results are never uploaded automatically.
 

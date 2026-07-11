@@ -1,6 +1,6 @@
 # Code Signing
 
-Signing the DiskScope executable and installer prevents SmartScreen warnings and proves the binaries come from Lemolek. Signing is optional for local builds and automatic in the release workflow once secrets are configured.
+Signing the StorageView executable and installer prevents SmartScreen warnings and proves the binaries come from Lemolek. Signing is optional for local builds and automatic in the release workflow once secrets are configured.
 
 ## Certificate Options
 
@@ -13,7 +13,7 @@ Signing the DiskScope executable and installer prevents SmartScreen warnings and
 Import the certificate into the current user store:
 
 ```powershell
-Import-PfxCertificate -FilePath diskscope-signing.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (Read-Host -AsSecureString)
+Import-PfxCertificate -FilePath storageview-signing.pfx -CertStoreLocation Cert:\CurrentUser\My -Password (Read-Host -AsSecureString)
 ```
 
 Read the certificate thumbprint:
@@ -44,7 +44,7 @@ The release workflow signs automatically when these repository secrets exist:
 Encode the certificate:
 
 ```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("diskscope-signing.pfx")) | Set-Clipboard
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("storageview-signing.pfx")) | Set-Clipboard
 ```
 
 The workflow imports the certificate into the runner's certificate store and passes the thumbprint to the Tauri bundler through a config overlay. Without the secrets, the workflow still produces an unsigned installer.

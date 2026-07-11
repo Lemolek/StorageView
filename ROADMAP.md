@@ -1,4 +1,4 @@
-# DiskScope Roadmap
+# StorageView Roadmap
 
 ## Phase 1 — Foundation (complete)
 
