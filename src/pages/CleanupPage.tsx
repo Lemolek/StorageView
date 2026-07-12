@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { Table, TableContainer, Td, Th } from "@/components/ui/Table";
 import { RecommendationsCard } from "@/features/cleanup/RecommendationsCard";
+import { RecycleBinCard } from "@/features/cleanup/RecycleBinCard";
 import { queueTotals, useCleanupStore } from "@/features/cleanup/cleanupStore";
 import { useSettingsStore } from "@/features/settings/settingsStore";
 import { formatBytes } from "@/lib/format/bytes";
@@ -61,6 +62,7 @@ export function CleanupPage() {
         }
       />
       <RecommendationsCard />
+      <RecycleBinCard />
       {lastError ? (
         <Card className="mb-6 flex items-start justify-between gap-4 border-danger/40 p-5">
           <div className="flex min-w-0 items-start gap-3">
