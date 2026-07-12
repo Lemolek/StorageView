@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { useTheme, type Theme } from "@/app/providers/ThemeProvider";
+import { ThemeSection } from "@/features/settings/ThemeSection";
+import { UpdatesCard } from "@/features/settings/UpdatesCard";
 import {
   ADVANCED_UNLOCK_PHRASE,
   useSettingsStore,
@@ -10,15 +11,8 @@ import {
 import { useAppInfo } from "@/hooks/useAppInfo";
 import { isDesktopRuntime } from "@/lib/api/app";
 import { selectFolder } from "@/lib/api/dialog";
-import { cn } from "@/lib/utils/cn";
-
-const themeOptions: { value: Theme; label: string }[] = [
-  { value: "dark", label: "Dark" },
-  { value: "light", label: "Light" },
-];
 
 export function SettingsPage() {
-  const { theme, setTheme } = useTheme();
   const appInfo = useAppInfo();
   const {
     ignoredPaths,
@@ -60,30 +54,7 @@ export function SettingsPage() {
         description="Application preferences and information."
       />
       <div className="space-y-6">
-        <Card>
-          <h2 className="text-base font-medium">Appearance</h2>
-          <p className="mt-1 text-sm text-muted">
-            Choose how StorageView looks on this device.
-          </p>
-          <div className="mt-4 flex gap-2">
-            {themeOptions.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setTheme(option.value)}
-                aria-pressed={theme === option.value}
-                className={cn(
-                  "rounded-lg border px-4 py-2 text-sm font-medium transition-colors duration-200",
-                  theme === option.value
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted hover:text-foreground",
-                )}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </Card>
+        <ThemeSection />
         <Card>
           <h2 className="text-base font-medium">Scanning</h2>
           <p className="mt-1 text-sm text-muted">
@@ -184,6 +155,7 @@ export function SettingsPage() {
             uploads file paths, filenames or scan results.
           </p>
         </Card>
+        <UpdatesCard />
         <Card>
           <h2 className="text-base font-medium">About</h2>
           <div className="mt-3 space-y-1 text-sm text-muted">
