@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.8.0
+
+Holo Black visual overhaul.
+
+- New Holo Black design language: true OLED black canvas, pure white typography, compact geometry and restrained holographic lighting
+- Holo Black is the default theme; Light theme retained and custom themes remain compatible
+- Rebuilt shared components: buttons with luminous borders and light sweep, glass dialogs, compact tables, glowing progress bars, new input, select and tabs primitives
+- Redesigned application shell: sidebar with animated luminous active indicator, new slim top bar with global command search
+- Restyled every screen — Overview, Storage, Treemap, Search, Applications, Cleanup, Reports, Settings — to one consistent design system
+- Treemap tiles now draw from the active theme palette with a white selection rim
+- Analytics charts source their palette from theme tokens
+- Command palette rendered as animated black glass
+- Semantic design tokens with derived glow, surface and border variables; no screen-specific hard-coded colors
+
 ## 0.7.0
 
 Feature expansion release.

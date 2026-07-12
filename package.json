@@ -1,7 +1,7 @@
 {
   "name": "storageview",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "StorageView — Analyze. Visualize. Optimize.",
   "author": "Lemolek",
   "license": "SEE LICENSE IN LICENSE",
