@@ -56,7 +56,10 @@ export function SearchResultsTable({ hits }: { hits: SearchHit[] }) {
         </thead>
         <tbody>
           {sorted.map((hit) => (
-            <tr key={hit.path} className="transition-colors hover:bg-surface/60">
+            <tr
+              key={hit.path}
+              className="transition-colors duration-(--motion-ms) hover:bg-surface/60"
+            >
               <Td className="text-muted">
                 {hit.kind === "folder" ? (
                   <Folder className="h-4 w-4" aria-label="Folder" />
@@ -64,16 +67,19 @@ export function SearchResultsTable({ hits }: { hits: SearchHit[] }) {
                   <File className="h-4 w-4" aria-label="File" />
                 )}
               </Td>
-              <Td className="max-w-56 truncate font-medium" title={hit.name}>
+              <Td
+                className="max-w-56 truncate text-[13px] font-medium text-foreground"
+                title={hit.name}
+              >
                 {hit.name}
               </Td>
-              <Td className="whitespace-nowrap text-right tabular-nums">
+              <Td className="whitespace-nowrap text-right text-[13px] tabular-nums text-foreground">
                 {hit.kind === "folder" ? "—" : formatBytes(hit.sizeBytes)}
               </Td>
-              <Td className="whitespace-nowrap text-muted">
+              <Td className="whitespace-nowrap text-xs text-muted">
                 {formatDateTime(hit.modifiedMs)}
               </Td>
-              <Td className="max-w-80 truncate text-muted" title={hit.path}>
+              <Td className="max-w-80 truncate text-xs text-muted" title={hit.path}>
                 {hit.path}
               </Td>
               <Td>

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Tabs } from "@/components/ui/Tabs";
 import { AgeBarChart } from "@/features/analytics/AgeBarChart";
 import { FileTypesDonut } from "@/features/analytics/FileTypesDonut";
 import { SizeBarChart } from "@/features/analytics/SizeBarChart";
@@ -29,7 +30,6 @@ import { useDisks } from "@/hooks/useDisks";
 import { isDesktopRuntime } from "@/lib/api/app";
 import { selectFolder } from "@/lib/api/dialog";
 import { formatBytes } from "@/lib/format/bytes";
-import { cn } from "@/lib/utils/cn";
 
 type StorageTab = "treemap" | "files" | "folders" | "types" | "duplicates" | "insights";
 
@@ -54,7 +54,7 @@ export function StoragePage() {
   const result = useScanStore((store) => store.result);
   const startScan = useScanStore((store) => store.startScan);
   const scanning = status === "scanning";
-  const { theme } = useTheme();
+  const { activeTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<StorageTab>("treemap");
   const [browseRoot, setBrowseRoot] = useState<string | null>(null);
   const [drilldownExtension, setDrilldownExtension] = useState<string | null>(null);
@@ -94,7 +94,7 @@ export function StoragePage() {
   }
 
   const treemapRoot = browseRoot ?? result?.rootPath ?? null;
-  const palette = chartPalette(theme);
+  const palette = chartPalette(activeTheme.tokens);
 
   return (
     <>
@@ -125,13 +125,15 @@ export function StoragePage() {
       />
       <ScanStatusPanel />
       {error ? (
-        <Card className="mb-6 border-danger/40 p-5">
-          <p className="text-sm font-medium">Unable to read drive information</p>
-          <p className="mt-1 text-sm text-muted">{error}</p>
+        <Card className="mb-4 border-danger/40 p-4">
+          <p className="text-[13px] font-medium text-foreground">
+            Unable to read drive information
+          </p>
+          <p className="mt-1 text-xs text-muted">{error}</p>
         </Card>
       ) : null}
       {disks && disks.length > 0 ? (
-        <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {disks.map((disk) => (
             <DiskCard
               key={`${disk.mountPoint}-${disk.name}`}
@@ -142,35 +144,18 @@ export function StoragePage() {
           ))}
         </div>
       ) : loading ? (
-        <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {[0, 1, 2].map((index) => (
-            <Card key={index} className="h-44 animate-pulse p-5" />
+            <Card key={index} className="h-40 animate-pulse p-4" />
           ))}
         </div>
       ) : null}
-      <div
-        role="tablist"
-        aria-label="Storage views"
-        className="mb-6 flex gap-1 rounded-lg border border-border bg-surface p-1"
-      >
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            role="tab"
-            type="button"
-            aria-selected={activeTab === tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              "flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200",
-              activeTab === tab.id
-                ? "bg-card text-foreground"
-                : "text-muted hover:text-foreground",
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        tabs={tabs}
+        active={activeTab}
+        onChange={setActiveTab}
+        label="Storage views"
+      />
       {activeTab === "treemap" ? (
         treemapRoot ? (
           <div className="space-y-3">
@@ -249,9 +234,11 @@ export function StoragePage() {
       ) : null}
       {activeTab === "insights" ? (
         result ? (
-          <div className="grid gap-4 xl:grid-cols-2">
+          <div className="grid gap-3 xl:grid-cols-2">
             <Card>
-              <h2 className="mb-4 text-base font-medium">File type distribution</h2>
+              <h2 className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted">
+                File type distribution
+              </h2>
               <FileTypesDonut
                 fileTypes={result.fileTypes}
                 totalBytes={result.totalBytes}
@@ -259,11 +246,15 @@ export function StoragePage() {
               />
             </Card>
             <Card>
-              <h2 className="mb-4 text-base font-medium">File age by size</h2>
+              <h2 className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted">
+                File age by size
+              </h2>
               <AgeBarChart ageDistribution={result.ageDistribution} palette={palette} />
             </Card>
             <Card>
-              <h2 className="mb-4 text-base font-medium">Largest files</h2>
+              <h2 className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted">
+                Largest files
+              </h2>
               <SizeBarChart
                 data={result.largestFiles.slice(0, TOP_ITEMS).map((file) => ({
                   name: shortName(file.name),
@@ -274,7 +265,9 @@ export function StoragePage() {
               />
             </Card>
             <Card>
-              <h2 className="mb-4 text-base font-medium">Largest folders</h2>
+              <h2 className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted">
+                Largest folders
+              </h2>
               <SizeBarChart
                 data={result.largestDirectories.slice(0, TOP_ITEMS).map((folder) => ({
                   name: shortName(folder.name),
@@ -285,7 +278,7 @@ export function StoragePage() {
               />
             </Card>
             <Card className="xl:col-span-2">
-              <p className="text-sm text-muted">
+              <p className="text-xs text-muted">
                 {result.rootPath} · {formatBytes(result.totalBytes)} scanned ·{" "}
                 {result.totalFiles.toLocaleString()} files
               </p>

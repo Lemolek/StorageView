@@ -34,7 +34,7 @@ export function AgeBarChart({ ageDistribution, palette }: AgeBarChartProps) {
           />
           <YAxis
             tickFormatter={(value: number) => formatBytes(value, 0)}
-            tick={{ fill: palette.axisText, fontSize: 11 }}
+            tick={{ fill: palette.axisText, fontSize: 10 }}
             axisLine={{ stroke: palette.grid }}
             tickLine={false}
             width={64}
@@ -63,8 +63,8 @@ export function AgeBarChart({ ageDistribution, palette }: AgeBarChartProps) {
           <Bar
             dataKey="totalBytes"
             fill={palette.bar}
-            barSize={28}
-            radius={[4, 4, 0, 0]}
+            barSize={12}
+            radius={[3, 3, 0, 0]}
             isAnimationActive={false}
           />
         </BarChart>

@@ -36,7 +36,7 @@ export function SizeBarChart({ data, palette, height = 300 }: SizeBarChartProps)
           <XAxis
             type="number"
             tickFormatter={(value: number) => formatBytes(value, 0)}
-            tick={{ fill: palette.axisText, fontSize: 11 }}
+            tick={{ fill: palette.axisText, fontSize: 10 }}
             axisLine={{ stroke: palette.grid }}
             tickLine={false}
           />
@@ -44,7 +44,7 @@ export function SizeBarChart({ data, palette, height = 300 }: SizeBarChartProps)
             type="category"
             dataKey="name"
             width={150}
-            tick={{ fill: palette.axisText, fontSize: 11 }}
+            tick={{ fill: palette.axisText, fontSize: 10 }}
             axisLine={{ stroke: palette.grid }}
             tickLine={false}
           />
@@ -66,7 +66,7 @@ export function SizeBarChart({ data, palette, height = 300 }: SizeBarChartProps)
             itemStyle={{ color: palette.tooltipText }}
             labelStyle={{ color: palette.tooltipText }}
           />
-          <Bar dataKey="value" barSize={14} radius={[0, 4, 4, 0]} isAnimationActive={false}>
+          <Bar dataKey="value" barSize={11} radius={[0, 3, 3, 0]} isAnimationActive={false}>
             {data.map((datum) => (
               <Cell key={datum.name} fill={palette.bar} />
             ))}

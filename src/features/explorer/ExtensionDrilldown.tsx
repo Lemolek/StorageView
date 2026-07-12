@@ -49,26 +49,26 @@ export function ExtensionDrilldown({
   const label = extension ? `.${extension}` : "No extension";
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex items-center gap-3">
         <Button variant="secondary" size="sm" onClick={onBack}>
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
           All types
         </Button>
-        <p className="text-sm text-muted">
+        <p className="text-[13px] text-muted">
           Files with type <span className="font-medium text-foreground">{label}</span>
           {files ? ` · ${files.length.toLocaleString()} largest` : ""}
         </p>
       </div>
       {error ? (
-        <Card className="border-danger/40 p-5">
-          <p className="text-sm font-medium">Unable to list files</p>
-          <p className="mt-1 text-sm text-muted">{error}</p>
+        <Card className="border-danger/40 p-4">
+          <p className="text-[13px] font-medium text-foreground">Unable to list files</p>
+          <p className="mt-1 text-xs text-muted">{error}</p>
         </Card>
       ) : files ? (
         <LargestFilesTable files={files} />
       ) : (
-        <Card className="flex items-center gap-3 p-5 text-sm text-muted">
+        <Card className="flex items-center gap-3 p-4 text-[13px] text-muted">
           <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden="true" />
           Collecting {label} files…
         </Card>

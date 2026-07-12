@@ -3,7 +3,9 @@ import { CircleAlert, Loader2, Search } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Input } from "@/components/ui/Input";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Select } from "@/components/ui/Select";
 import { SearchResultsTable } from "@/features/search/SearchResultsTable";
 import { useDisks } from "@/hooks/useDisks";
 import { isDesktopRuntime } from "@/lib/api/app";
@@ -163,10 +165,10 @@ export function SearchPage() {
         title="Search"
         description="Find files and folders by name, size, type and dates."
       />
-      <Card className="mb-6 space-y-4 p-5">
+      <Card className="mb-6 space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <p
-            className="min-w-0 flex-1 truncate rounded-lg border border-border bg-surface px-3 py-2 text-sm text-muted"
+            className="flex h-8 min-w-0 flex-1 items-center truncate rounded-input border border-border bg-surface px-2.5 text-sm text-muted"
             title={root || undefined}
           >
             {root || "Choose a location to search"}
@@ -186,7 +188,7 @@ export function SearchPage() {
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <input
+          <Input
             value={text}
             onChange={(event) => setText(event.target.value)}
             onKeyDown={(event) => {
@@ -195,12 +197,12 @@ export function SearchPage() {
               }
             }}
             placeholder={useRegex ? "Regular expression…" : "Name, *.log, report?.txt…"}
-            className="h-9 w-72 rounded-lg border border-border bg-surface px-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-primary"
+            className="w-72"
           />
           <div
             role="radiogroup"
             aria-label="Search scope"
-            className="flex rounded-lg border border-border bg-surface p-0.5"
+            className="inline-flex gap-0.5 rounded-btn border border-border bg-surface p-0.5"
           >
             {scopeOptions.map((option) => (
               <button
@@ -210,9 +212,9 @@ export function SearchPage() {
                 aria-checked={scope === option.value}
                 onClick={() => setScope(option.value)}
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-xs font-medium transition-colors duration-200",
+                  "rounded-[5px] px-3 py-1.5 text-xs font-medium transition-all duration-(--motion-ms)",
                   scope === option.value
-                    ? "bg-card text-foreground"
+                    ? "bg-card text-foreground shadow-[inset_0_-1px_0_var(--primary)]"
                     : "text-muted hover:text-foreground",
                 )}
               >
@@ -220,61 +222,57 @@ export function SearchPage() {
               </button>
             ))}
           </div>
-          <input
+          <Input
             value={extensions}
             onChange={(event) => setExtensions(event.target.value)}
             placeholder="Extensions: mp4, iso"
-            className="h-9 w-44 rounded-lg border border-border bg-surface px-3 text-sm text-foreground outline-none placeholder:text-muted focus:border-primary"
+            className="w-44"
           />
         </div>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-          <label className="flex items-center gap-2 text-muted">
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted">
             Min
-            <select
+            <Select
               value={minSize}
               onChange={(event) => setMinSize(Number(event.target.value))}
-              className="h-9 rounded-lg border border-border bg-surface px-2 text-sm text-foreground outline-none focus:border-primary"
             >
               {sizeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
-          <label className="flex items-center gap-2 text-muted">
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted">
             Max
-            <select
+            <Select
               value={maxSize}
               onChange={(event) => setMaxSize(Number(event.target.value))}
-              className="h-9 rounded-lg border border-border bg-surface px-2 text-sm text-foreground outline-none focus:border-primary"
             >
               {sizeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
-          <label className="flex items-center gap-2 text-muted">
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted">
             Modified after
-            <input
+            <Input
               type="date"
               value={modifiedAfter}
               onChange={(event) => setModifiedAfter(event.target.value)}
-              className="h-9 rounded-lg border border-border bg-surface px-2 text-sm text-foreground outline-none focus:border-primary"
             />
           </label>
-          <label className="flex items-center gap-2 text-muted">
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted">
             before
-            <input
+            <Input
               type="date"
               value={modifiedBefore}
               onChange={(event) => setModifiedBefore(event.target.value)}
-              className="h-9 rounded-lg border border-border bg-surface px-2 text-sm text-foreground outline-none focus:border-primary"
             />
           </label>
-          <label className="flex items-center gap-2 text-muted">
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted">
             <input
               type="checkbox"
               checked={useRegex}
@@ -283,7 +281,7 @@ export function SearchPage() {
             />
             Regex
           </label>
-          <label className="flex items-center gap-2 text-muted">
+          <label className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-muted">
             <input
               type="checkbox"
               checked={includeHidden}
@@ -307,22 +305,22 @@ export function SearchPage() {
         </div>
       </Card>
       {error ? (
-        <Card className="mb-6 flex items-start gap-3 border-danger/40 p-5">
-          <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-danger" aria-hidden="true" />
+        <Card className="mb-6 flex items-start gap-3 border-danger/50 p-4">
+          <CircleAlert className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
           <div>
-            <p className="text-sm font-medium">Search failed</p>
-            <p className="mt-1 text-sm text-muted">{error}</p>
+            <p className="text-sm font-medium text-foreground">Search failed</p>
+            <p className="mt-1 text-xs text-muted">{error}</p>
           </div>
         </Card>
       ) : null}
       {running ? (
-        <p className="mb-4 flex items-center gap-2 text-sm text-muted">
-          <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden="true" />
+        <p className="mb-4 flex items-center gap-2 text-xs text-muted">
+          <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" aria-hidden="true" />
           Searching… {hits.length.toLocaleString()} results so far
         </p>
       ) : null}
       {summary ? (
-        <p className="mb-4 text-sm text-muted">
+        <p className="mb-4 text-xs text-muted">
           {summary.totalHits.toLocaleString()} results in{" "}
           {formatDuration(summary.elapsedMs)}
           {summary.truncated
@@ -331,7 +329,7 @@ export function SearchPage() {
         </p>
       ) : null}
       {cancelled ? (
-        <p className="mb-4 text-sm text-muted">
+        <p className="mb-4 text-xs text-muted">
           Search cancelled — showing partial results.
         </p>
       ) : null}

@@ -4,6 +4,7 @@ import { useTheme } from "@/app/providers/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Dialog } from "@/components/ui/Dialog";
+import { Input } from "@/components/ui/Input";
 import { saveReportAs } from "@/lib/api/reports";
 import { isDesktopRuntime } from "@/lib/api/app";
 import { contrastRatio } from "@/lib/theme/color";
@@ -194,10 +195,10 @@ export function ThemeSection() {
           }}
         />
       </div>
-      {message ? <p className="mt-2 text-sm text-muted">{message}</p> : null}
+      {message ? <p className="mt-2 text-[11px] text-muted">{message}</p> : null}
       {importError ? (
-        <div className="mt-2 rounded-lg border border-danger/40 p-3 text-sm">
-          <p className="font-medium">Theme import rejected</p>
+        <div className="mt-2 rounded-card border border-danger/40 p-3 text-[13px]">
+          <p className="font-medium text-foreground">Theme import rejected</p>
           <ul className="mt-1 list-inside list-disc text-muted">
             {importError.map((error) => (
               <li key={error}>{error}</li>
@@ -210,26 +211,39 @@ export function ThemeSection() {
           <li
             key={theme.id}
             className={cn(
-              "flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 transition-colors duration-150",
+              "flex flex-wrap items-center gap-2 rounded-card border px-3 py-2 transition-all duration-(--motion-ms)",
               theme.id === activeTheme.id
-                ? "border-primary bg-primary/10"
-                : "border-border hover:bg-surface/60",
+                ? "border-primary/60 bg-primary/10 glow-accent-soft"
+                : "border-border hover:bg-card-hover",
             )}
           >
             <span
-              className="h-4 w-4 shrink-0 rounded-full border border-border"
-              style={{ backgroundColor: theme.tokens.colors.accent }}
+              className="flex shrink-0 gap-0.5 rounded-[4px] border border-border p-0.5"
               aria-hidden="true"
-            />
+            >
+              {[
+                theme.tokens.colors.background,
+                theme.tokens.colors.card,
+                theme.tokens.colors.accent,
+              ].map((swatch, index) => (
+                <span
+                  key={index}
+                  className="h-3 w-2.5 rounded-[2px]"
+                  style={{ backgroundColor: swatch }}
+                />
+              ))}
+            </span>
             <button
               type="button"
               onClick={() => setActiveTheme(theme.id)}
-              className="min-w-0 flex-1 truncate text-left text-sm font-medium"
+              className="min-w-0 flex-1 truncate text-left text-[13px] font-medium text-foreground"
             >
               {theme.tokens.name}
             </button>
             {theme.builtIn ? (
-              <span className="text-xs text-muted">Built-in</span>
+              <span className="rounded-[4px] border border-border px-1.5 text-[10px] uppercase tracking-wider text-muted">
+                Built-in
+              </span>
             ) : null}
             <Button variant="ghost" size="sm" onClick={() => duplicate(theme.id)}>
               Duplicate
@@ -253,12 +267,12 @@ export function ThemeSection() {
       {editing && draft ? (
         <div className="mt-5 space-y-4 border-t border-border pt-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <input
+            <Input
               value={draft.name}
               onChange={(event) => updateDraft({ ...draft, name: event.target.value })}
               maxLength={40}
               aria-label="Theme name"
-              className="h-9 w-64 rounded-lg border border-border bg-surface px-3 text-sm font-medium text-foreground outline-none focus:border-primary"
+              className="w-64 font-medium"
             />
             <div className="flex gap-2">
               <Button variant="secondary" size="sm" onClick={stopEditing}>
@@ -270,7 +284,7 @@ export function ThemeSection() {
             </div>
           </div>
           {contrast !== null && contrast < 4.5 ? (
-            <p className="flex items-center gap-2 rounded-lg border border-warning/40 px-3 py-2 text-sm text-warning">
+            <p className="flex items-center gap-2 rounded-card border border-warning/40 px-3 py-2 text-[13px] text-warning">
               <CircleAlert className="h-4 w-4 shrink-0" aria-hidden="true" />
               Text/background contrast is {contrast.toFixed(1)}:1 — below the
               recommended 4.5:1.

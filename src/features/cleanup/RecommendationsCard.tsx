@@ -71,13 +71,15 @@ export function RecommendationsCard() {
     suggestions?.reduce((sum, suggestion) => sum + suggestion.sizeBytes, 0) ?? 0;
 
   return (
-    <Card className="mb-6 p-5">
+    <Card className="mb-6 p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+          <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           <div className="min-w-0">
-            <h2 className="text-base font-medium">Recommended cleanup</h2>
-            <p className="mt-1 text-sm text-muted">
+            <h2 className="text-sm font-semibold text-foreground">
+              Recommended cleanup
+            </h2>
+            <p className="mt-1 text-[11px] text-muted">
               {suggestions
                 ? `${suggestions.length} low-risk locations · ${formatBytes(totalBytes)} recoverable`
                 : "Scans known temporary, browser and package manager cache locations."}
@@ -96,21 +98,21 @@ export function RecommendationsCard() {
           {suggestions ? "Refresh" : "Find recommendations"}
         </Button>
       </div>
-      {error ? <p className="mt-3 text-sm text-danger">{error}</p> : null}
+      {error ? <p className="mt-3 text-xs text-danger">{error}</p> : null}
       {suggestions && suggestions.length === 0 ? (
-        <p className="mt-3 text-sm text-muted">
+        <p className="mt-3 text-xs text-muted">
           No recoverable space was found in known cleanup locations.
         </p>
       ) : null}
       {suggestions && suggestions.length > 0 ? (
         <>
-          <ul className="mt-4 space-y-1.5">
+          <ul className="mt-3 space-y-1">
             {suggestions.map((suggestion) => {
               const queued = queuedPaths.has(suggestion.path);
               return (
                 <li
                   key={suggestion.path}
-                  className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-surface/60"
+                  className="flex items-center gap-3 rounded-btn px-2 py-1.5 text-[13px] transition-colors duration-(--motion-ms) hover:bg-surface/60"
                 >
                   <input
                     type="checkbox"
@@ -120,14 +122,17 @@ export function RecommendationsCard() {
                     onChange={() => toggle(suggestion.path)}
                     aria-label={`Select ${suggestion.label}`}
                   />
-                  <span className="min-w-0 truncate font-medium" title={suggestion.path}>
+                  <span
+                    className="min-w-0 truncate font-medium text-foreground"
+                    title={suggestion.path}
+                  >
                     {suggestion.label}
                   </span>
-                  <span className="shrink-0 text-xs text-muted">
+                  <span className="inline-flex shrink-0 rounded-[4px] border border-border px-1.5 text-[10px] font-medium uppercase tracking-wider text-muted">
                     {suggestion.category}
                   </span>
                   <RiskBadge level={suggestion.riskLevel} reason={suggestion.reason} />
-                  <span className="ml-auto shrink-0 tabular-nums">
+                  <span className="ml-auto shrink-0 tabular-nums text-foreground">
                     {formatBytes(suggestion.sizeBytes)}
                   </span>
                   {queued ? (
@@ -137,7 +142,7 @@ export function RecommendationsCard() {
               );
             })}
           </ul>
-          <div className="mt-4 flex justify-end">
+          <div className="mt-3 flex justify-end">
             <Button size="sm" disabled={selected.size === 0} onClick={addSelected}>
               Add selected to queue ({selected.size})
             </Button>

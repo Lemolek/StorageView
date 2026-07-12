@@ -43,7 +43,7 @@ export function FileTypesDonut({
 }: FileTypesDonutProps) {
   const slices = buildSlices(fileTypes, palette);
   return (
-    <div className="flex flex-col items-center gap-6 sm:flex-row">
+    <div className="flex flex-col items-center gap-4 sm:flex-row">
       <div className="h-56 w-56 shrink-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -77,14 +77,14 @@ export function FileTypesDonut({
       </div>
       <ul className="min-w-0 flex-1 space-y-1.5">
         {slices.map((slice) => (
-          <li key={slice.name} className="flex items-center gap-2 text-sm">
+          <li key={slice.name} className="flex items-center gap-2 text-[13px]">
             <span
               className="h-2.5 w-2.5 shrink-0 rounded-full"
               style={{ backgroundColor: slice.color }}
               aria-hidden="true"
             />
-            <span className="truncate">{slice.name}</span>
-            <span className="ml-auto shrink-0 text-muted">
+            <span className="truncate text-foreground">{slice.name}</span>
+            <span className="ml-auto shrink-0 text-xs tabular-nums text-muted">
               {formatBytes(slice.value)} ·{" "}
               {formatPercent(totalBytes > 0 ? slice.value / totalBytes : 0)}
             </span>

@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils/cn";
 import type { InstalledApp, LeftoverCandidate, LeftoverConfidence } from "@/types/apps";
 
 const confidenceStyles: Record<LeftoverConfidence, string> = {
-  high: "bg-danger/15 text-danger",
-  medium: "bg-warning/15 text-warning",
-  low: "bg-surface text-muted",
+  high: "border-danger/50 text-danger",
+  medium: "border-warning/50 text-warning",
+  low: "border-border text-muted",
 };
 
 const confidenceLabels: Record<LeftoverConfidence, string> = {
@@ -77,11 +77,11 @@ export function LeftoversPanel({ app }: { app: InstalledApp }) {
   };
 
   return (
-    <Card className="p-5">
+    <Card className="p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="text-sm font-medium">Leftover analysis</h3>
-          <p className="mt-1 text-xs text-muted">
+          <h3 className="text-sm font-semibold text-foreground">Leftover analysis</h3>
+          <p className="mt-1 text-[11px] text-muted">
             Leftover detection is conservative and may be incomplete. Review every
             item before cleanup.
           </p>
@@ -98,19 +98,19 @@ export function LeftoversPanel({ app }: { app: InstalledApp }) {
           {candidates ? "Refresh" : "Find leftovers"}
         </Button>
       </div>
-      {error ? <p className="mt-3 text-sm text-danger">{error}</p> : null}
+      {error ? <p className="mt-3 text-xs text-danger">{error}</p> : null}
       {candidates && candidates.length === 0 ? (
-        <p className="mt-3 text-sm text-muted">
+        <p className="mt-3 text-xs text-muted">
           No leftover candidates were found in known locations.
         </p>
       ) : null}
       {candidates && candidates.length > 0 ? (
         <>
-          <ul className="mt-4 space-y-1.5">
+          <ul className="mt-3 space-y-1">
             {candidates.map((candidate) => (
               <li
                 key={candidate.path}
-                className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-surface/60"
+                className="flex items-center gap-3 rounded-btn px-2 py-1.5 text-[13px] transition-colors duration-(--motion-ms) hover:bg-surface/60"
               >
                 <input
                   type="checkbox"
@@ -121,7 +121,7 @@ export function LeftoversPanel({ app }: { app: InstalledApp }) {
                 />
                 <span
                   className={cn(
-                    "inline-flex shrink-0 rounded-md px-2 py-0.5 text-xs font-medium",
+                    "inline-flex shrink-0 rounded-[4px] border px-1.5 text-[10px] font-medium uppercase tracking-wider",
                     confidenceStyles[candidate.confidence],
                   )}
                 >
@@ -131,13 +131,13 @@ export function LeftoversPanel({ app }: { app: InstalledApp }) {
                   {candidate.path}
                 </span>
                 <span className="shrink-0 text-xs text-muted">{candidate.source}</span>
-                <span className="ml-auto shrink-0 tabular-nums">
+                <span className="ml-auto shrink-0 tabular-nums text-foreground">
                   {formatBytes(candidate.sizeBytes)}
                 </span>
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex justify-end">
+          <div className="mt-3 flex justify-end">
             <Button size="sm" disabled={selected.size === 0} onClick={addSelected}>
               Add selected to cleanup queue ({selected.size})
             </Button>

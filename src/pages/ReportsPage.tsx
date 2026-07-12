@@ -65,9 +65,9 @@ export function ReportsPage() {
           </>
         }
       />
-      {message ? <p className="mb-4 text-sm text-muted">{message}</p> : null}
+      {message ? <p className="mb-4 text-xs text-muted">{message}</p> : null}
       {!result ? (
-        <p className="mb-6 text-sm text-muted">
+        <p className="mb-6 text-xs text-muted">
           Exports include the latest scan result. Run a scan to enable them.
         </p>
       ) : null}
@@ -94,29 +94,35 @@ export function ReportsPage() {
               </thead>
               <tbody>
                 {entries.map((entry) => (
-                  <tr key={entry.id} className="transition-colors hover:bg-surface/60">
-                    <Td className="whitespace-nowrap text-muted">
+                  <tr
+                    key={entry.id}
+                    className="transition-colors duration-(--motion-ms) hover:bg-surface/60"
+                  >
+                    <Td className="whitespace-nowrap text-xs text-muted">
                       {formatDateTime(entry.dateMs)}
                     </Td>
-                    <Td className="max-w-72 truncate" title={entry.rootPath}>
+                    <Td
+                      className="max-w-72 truncate text-[13px] font-medium text-foreground"
+                      title={entry.rootPath}
+                    >
                       {entry.rootPath}
                     </Td>
-                    <Td className="whitespace-nowrap text-right tabular-nums">
+                    <Td className="whitespace-nowrap text-right text-[13px] tabular-nums text-foreground">
                       {formatBytes(entry.totalBytes)}
                     </Td>
-                    <Td className="whitespace-nowrap text-right tabular-nums text-muted">
+                    <Td className="whitespace-nowrap text-right text-xs tabular-nums text-muted">
                       {entry.totalFiles.toLocaleString()}
                     </Td>
-                    <Td className="whitespace-nowrap text-right text-muted">
+                    <Td className="whitespace-nowrap text-right text-xs tabular-nums text-muted">
                       {formatDuration(entry.elapsedMs)}
                     </Td>
                     <Td
-                      className="max-w-64 truncate text-muted"
+                      className="max-w-64 truncate text-xs text-muted"
                       title={entry.largestFolderPath ?? undefined}
                     >
                       {entry.largestFolderPath ?? "—"}
                     </Td>
-                    <Td className="text-muted">
+                    <Td className="text-xs text-muted">
                       {entry.topExtension ? `.${entry.topExtension}` : "—"}
                     </Td>
                   </tr>

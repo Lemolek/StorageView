@@ -44,7 +44,7 @@ export function LargestFoldersTable({ folders }: { folders: DirectoryEntry[] }) 
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
           value={search}
@@ -52,7 +52,7 @@ export function LargestFoldersTable({ folders }: { folders: DirectoryEntry[] }) 
           placeholder="Search by name or path…"
           className="w-72"
         />
-        <p className="ml-auto text-xs text-muted">
+        <p className="ml-auto text-[11px] uppercase tracking-wider text-muted">
           {sorted.length.toLocaleString()} of {folders.length.toLocaleString()}{" "}
           folders
         </p>
@@ -87,17 +87,23 @@ export function LargestFoldersTable({ folders }: { folders: DirectoryEntry[] }) 
           </thead>
           <tbody>
             {sorted.map((folder) => (
-              <tr key={folder.path} className="transition-colors hover:bg-surface/60">
-                <Td className="max-w-56 truncate font-medium" title={folder.name}>
+              <tr
+                key={folder.path}
+                className="transition-colors duration-(--motion-ms) hover:bg-card-hover"
+              >
+                <Td
+                  className="max-w-56 truncate text-[13px] font-medium text-foreground"
+                  title={folder.name}
+                >
                   {folder.name}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums">
+                <Td className="whitespace-nowrap text-right text-[13px] tabular-nums text-foreground">
                   {formatBytes(folder.sizeBytes)}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums text-muted">
+                <Td className="whitespace-nowrap text-right text-xs tabular-nums text-muted">
                   {folder.fileCount.toLocaleString()}
                 </Td>
-                <Td className="max-w-80 truncate text-muted" title={folder.path}>
+                <Td className="max-w-80 truncate text-xs text-muted" title={folder.path}>
                   {folder.path}
                 </Td>
                 <Td>
@@ -108,7 +114,7 @@ export function LargestFoldersTable({ folders }: { folders: DirectoryEntry[] }) 
                       onClick={() => void startScan(folder.path)}
                       title="Scan this folder"
                       aria-label="Scan this folder"
-                      className="rounded-md p-1.5 text-muted transition-colors duration-200 hover:bg-surface hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
+                      className="rounded-[5px] p-1 text-muted transition-colors duration-(--motion-ms) hover:bg-card-hover hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                     >
                       <FolderSearch className="h-4 w-4" aria-hidden="true" />
                     </button>

@@ -8,6 +8,7 @@ import {
   Loader2,
   RefreshCw,
 } from "lucide-react";
+import { useTheme } from "@/app/providers/ThemeProvider";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CopyPathButton } from "@/components/ui/CopyPathButton";
@@ -43,15 +44,18 @@ function breadcrumbSegments(path: string): { label: string; path: string }[] {
   return segments;
 }
 
-function tileFill(entry: BrowseEntry, index: number): string {
+function tileFill(entry: BrowseEntry, index: number, palette: string[]): string {
   if (entry.kind === "folder") {
-    const strength = Math.max(22, 58 - index * 3);
-    return `color-mix(in srgb, var(--primary) ${strength}%, var(--card))`;
+    const hex = palette[index % palette.length] ?? "var(--primary)";
+    const strength = Math.max(20, 56 - index * 2);
+    return `color-mix(in srgb, ${hex} ${strength}%, var(--card))`;
   }
-  return "color-mix(in srgb, var(--muted) 22%, var(--card))";
+  return "color-mix(in srgb, var(--muted) 14%, var(--card))";
 }
 
 export function TreemapExplorer({ root }: { root: string }) {
+  const { activeTheme } = useTheme();
+  const treemapPalette = activeTheme.tokens.treemapPalette;
   const [listing, setListing] = useState<BrowseListing | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -147,7 +151,7 @@ export function TreemapExplorer({ root }: { root: string }) {
   const segments = listing ? breadcrumbSegments(listing.path) : [];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
         <Button
           variant="secondary"
@@ -173,17 +177,20 @@ export function TreemapExplorer({ root }: { root: string }) {
         >
           <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
         </Button>
-        <nav aria-label="Path" className="flex min-w-0 flex-1 items-center gap-1 text-sm">
+        <nav aria-label="Path" className="flex min-w-0 flex-1 items-center gap-1 text-xs">
           {segments.map((segment, index) => (
             <span key={segment.path} className="flex min-w-0 items-center gap-1">
               {index > 0 ? (
-                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted" aria-hidden="true" />
+                <ChevronRight
+                  className="h-3 w-3 shrink-0 text-muted/50"
+                  aria-hidden="true"
+                />
               ) : null}
               <button
                 type="button"
                 onClick={() => navigate(segment.path)}
                 className={cn(
-                  "truncate rounded px-1 py-0.5 transition-colors duration-150 hover:text-foreground",
+                  "truncate rounded-[5px] px-1 py-0.5 transition-colors duration-(--motion-ms) hover:text-foreground",
                   index === segments.length - 1
                     ? "font-medium text-foreground"
                     : "text-muted",
@@ -205,63 +212,68 @@ export function TreemapExplorer({ root }: { root: string }) {
         </Button>
       </div>
       {error ? (
-        <Card className="flex items-start gap-3 border-danger/40 p-5">
-          <CircleAlert className="mt-0.5 h-5 w-5 shrink-0 text-danger" aria-hidden="true" />
+        <Card className="flex items-start gap-3 border-danger/40 p-4">
+          <CircleAlert className="mt-0.5 h-4 w-4 shrink-0 text-danger" aria-hidden="true" />
           <div>
-            <p className="text-sm font-medium">Unable to read this location</p>
-            <p className="mt-1 text-sm text-muted">{error}</p>
+            <p className="text-[13px] font-medium text-foreground">
+              Unable to read this location
+            </p>
+            <p className="mt-1 text-xs text-muted">{error}</p>
           </div>
         </Card>
       ) : null}
       <div
         ref={containerRef}
-        className="relative h-[28rem] overflow-hidden rounded-xl border border-border bg-card"
+        className="relative h-[28rem] overflow-hidden rounded-panel border border-border bg-card"
       >
         {loading ? (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/70">
             <Loader2 className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
           </div>
         ) : null}
-        {rects.map(({ entry, index, rect }) => {
-          const showText = rect.width > 64 && rect.height > 30;
-          const label =
-            entry.kind === "folder"
-              ? `Folder ${entry.name}, ${formatBytes(entry.sizeBytes)}, ${formatPercent(entry.percentOfParent / 100)} of parent`
-              : `File ${entry.name}, ${formatBytes(entry.sizeBytes)}`;
-          return (
-            <button
-              key={entry.path}
-              type="button"
-              aria-label={label}
-              title={`${entry.path}\n${entry.sizeBytes.toLocaleString()} bytes · ${formatBytes(entry.sizeBytes)} · ${entry.percentOfParent.toFixed(1)}%`}
-              onClick={() =>
-                entry.kind === "folder" ? navigate(entry.path) : setSelectedFile(entry)
-              }
-              style={{
-                left: rect.x,
-                top: rect.y,
-                width: Math.max(rect.width - 2, 0),
-                height: Math.max(rect.height - 2, 0),
-                backgroundColor: tileFill(entry, index),
-              }}
-              className={cn(
-                "absolute overflow-hidden rounded-[4px] text-left align-top outline-none transition-opacity duration-150 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-primary",
-                selectedFile?.path === entry.path && "ring-2 ring-primary",
-              )}
-            >
-              {showText ? (
-                <span className="block truncate px-1.5 pt-1 text-xs font-medium text-foreground">
-                  {entry.name}
-                </span>
-              ) : null}
-              {showText ? (
-                <span className="block truncate px-1.5 text-[10px] text-muted">
-                  {formatBytes(entry.sizeBytes)}
-                </span>
-              ) : null}
-            </button>
-          );
-        })}
+        <div key={listing?.path ?? root} className="dialog-in absolute inset-0">
+          {rects.map(({ entry, index, rect }) => {
+            const showText = rect.width > 64 && rect.height > 30;
+            const label =
+              entry.kind === "folder"
+                ? `Folder ${entry.name}, ${formatBytes(entry.sizeBytes)}, ${formatPercent(entry.percentOfParent / 100)} of parent`
+                : `File ${entry.name}, ${formatBytes(entry.sizeBytes)}`;
+            return (
+              <button
+                key={entry.path}
+                type="button"
+                aria-label={label}
+                title={`${entry.path}\n${entry.sizeBytes.toLocaleString()} bytes · ${formatBytes(entry.sizeBytes)} · ${entry.percentOfParent.toFixed(1)}%`}
+                onClick={() =>
+                  entry.kind === "folder" ? navigate(entry.path) : setSelectedFile(entry)
+                }
+                style={{
+                  left: rect.x,
+                  top: rect.y,
+                  width: Math.max(rect.width - 2, 0),
+                  height: Math.max(rect.height - 2, 0),
+                  backgroundColor: tileFill(entry, index, treemapPalette),
+                }}
+                className={cn(
+                  "absolute overflow-hidden rounded-[3px] border border-[rgba(255,255,255,0.08)] text-left align-top outline-none transition-all duration-(--motion-ms) hover:border-[rgba(255,255,255,0.22)] hover:brightness-110 focus-visible:ring-2 focus-visible:ring-primary",
+                  selectedFile?.path === entry.path &&
+                    "shadow-[0_0_0_1px_rgba(255,255,255,0.85),0_0_14px_rgba(255,255,255,0.25)]",
+                )}
+              >
+                {showText ? (
+                  <span className="block truncate px-1.5 pt-1 text-xs font-medium text-foreground">
+                    {entry.name}
+                  </span>
+                ) : null}
+                {showText ? (
+                  <span className="block truncate px-1.5 text-[10px] text-muted">
+                    {formatBytes(entry.sizeBytes)}
+                  </span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
         {!loading && listing && rects.length === 0 ? (
           <p className="absolute inset-0 flex items-center justify-center text-sm text-muted">
             This location is empty.
@@ -271,8 +283,10 @@ export function TreemapExplorer({ root }: { root: string }) {
       {selectedFile ? (
         <Card className="flex flex-wrap items-center justify-between gap-3 p-4">
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{selectedFile.name}</p>
-            <p className="truncate text-xs text-muted">
+            <p className="truncate text-[13px] font-medium text-foreground">
+              {selectedFile.name}
+            </p>
+            <p className="truncate text-[11px] text-muted">
               {formatBytes(selectedFile.sizeBytes)} ·{" "}
               {formatDateTime(selectedFile.modifiedMs)} · {selectedFile.path}
             </p>
@@ -292,12 +306,12 @@ export function TreemapExplorer({ root }: { root: string }) {
         </Card>
       ) : null}
       {listing && listing.entries.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="card-edge overflow-hidden rounded-panel border border-border bg-card">
           <ul>
             {listing.entries.map((entry) => (
               <li
                 key={entry.path}
-                className="flex items-center gap-3 border-b border-border/50 px-4 py-2 text-sm transition-colors last:border-b-0 hover:bg-surface/60"
+                className="flex items-center gap-3 border-b border-border/50 px-3 py-1.5 text-[13px] transition-colors duration-(--motion-ms) last:border-b-0 hover:bg-card-hover"
               >
                 <button
                   type="button"
@@ -306,22 +320,22 @@ export function TreemapExplorer({ root }: { root: string }) {
                       ? navigate(entry.path)
                       : setSelectedFile(entry)
                   }
-                  className="min-w-0 flex-1 truncate text-left font-medium hover:text-primary"
+                  className="min-w-0 flex-1 truncate text-left font-medium text-foreground transition-colors duration-(--motion-ms) hover:text-primary"
                   title={entry.path}
                 >
                   {entry.name}
                   {entry.kind === "folder" ? "\\" : ""}
                 </button>
-                <span className="w-40 shrink-0">
+                <span className="w-32 shrink-0">
                   <ProgressBar value={entry.percentOfParent} />
                 </span>
-                <span className="w-14 shrink-0 text-right text-xs tabular-nums text-muted">
+                <span className="w-14 shrink-0 text-right text-[11px] tabular-nums text-muted">
                   {entry.percentOfParent.toFixed(1)}%
                 </span>
-                <span className="w-24 shrink-0 text-right tabular-nums">
+                <span className="w-24 shrink-0 text-right text-xs tabular-nums text-foreground">
                   {formatBytes(entry.sizeBytes)}
                 </span>
-                <span className="w-36 shrink-0 text-right text-xs text-muted">
+                <span className="w-36 shrink-0 text-right text-[11px] text-muted">
                   {formatDateTime(entry.modifiedMs)}
                 </span>
                 <span className="flex shrink-0 gap-1">

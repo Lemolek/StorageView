@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Dialog } from "@/components/ui/Dialog";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Input } from "@/components/ui/Input";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { RiskBadge } from "@/components/ui/RiskBadge";
 import { Table, TableContainer, Td, Th } from "@/components/ui/Table";
@@ -64,15 +65,15 @@ export function CleanupPage() {
       <RecommendationsCard />
       <RecycleBinCard />
       {lastError ? (
-        <Card className="mb-6 flex items-start justify-between gap-4 border-danger/40 p-5">
+        <Card className="mb-6 flex items-start justify-between gap-4 border-danger/50 p-4">
           <div className="flex min-w-0 items-start gap-3">
             <CircleAlert
-              className="mt-0.5 h-5 w-5 shrink-0 text-danger"
+              className="mt-0.5 h-4 w-4 shrink-0 text-danger"
               aria-hidden="true"
             />
             <div className="min-w-0">
-              <p className="text-sm font-medium">Cleanup failed</p>
-              <p className="mt-1 text-sm text-muted">{lastError}</p>
+              <p className="text-sm font-medium text-foreground">Cleanup failed</p>
+              <p className="mt-1 text-xs text-muted">{lastError}</p>
             </div>
           </div>
           <Button variant="secondary" size="sm" onClick={dismissReport}>
@@ -81,20 +82,20 @@ export function CleanupPage() {
         </Card>
       ) : null}
       {lastReport ? (
-        <Card className="mb-6 p-5">
+        <Card className="mb-6 p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3">
               <CheckCircle2
-                className="mt-0.5 h-5 w-5 shrink-0 text-success"
+                className="mt-0.5 h-4 w-4 shrink-0 text-success"
                 aria-hidden="true"
               />
               <div className="min-w-0">
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium text-foreground">
                   Cleanup complete — {lastReport.succeeded} of{" "}
                   {lastReport.requested} items{" "}
                   {lastReport.permanent ? "permanently deleted" : "moved to trash"}
                 </p>
-                <p className="mt-1 text-sm text-muted">
+                <p className="mt-1 text-xs text-muted">
                   {formatBytes(lastReport.bytesRecovered)} recovered
                 </p>
               </div>
@@ -104,13 +105,13 @@ export function CleanupPage() {
             </Button>
           </div>
           {lastReport.failed > 0 ? (
-            <ul className="mt-4 space-y-1 border-t border-border pt-3 text-sm">
+            <ul className="mt-3 space-y-1 border-t border-border pt-3 text-xs">
               {lastReport.outcomes
                 .filter((outcome) => !outcome.success)
                 .map((outcome) => (
                   <li key={outcome.path} className="flex gap-2 text-muted">
                     <CircleAlert
-                      className="mt-0.5 h-4 w-4 shrink-0 text-danger"
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0 text-danger"
                       aria-hidden="true"
                     />
                     <span className="min-w-0 break-all">
@@ -144,18 +145,24 @@ export function CleanupPage() {
               </thead>
               <tbody>
                 {items.map((item) => (
-                  <tr key={item.path} className="transition-colors hover:bg-surface/60">
-                    <Td className="max-w-56 truncate font-medium" title={item.name}>
+                  <tr
+                    key={item.path}
+                    className="transition-colors duration-(--motion-ms) hover:bg-surface/60"
+                  >
+                    <Td
+                      className="max-w-56 truncate text-[13px] font-medium text-foreground"
+                      title={item.name}
+                    >
                       {item.name}
                     </Td>
-                    <Td className="capitalize text-muted">{item.kind}</Td>
-                    <Td className="whitespace-nowrap text-right tabular-nums">
+                    <Td className="text-[13px] capitalize text-muted">{item.kind}</Td>
+                    <Td className="whitespace-nowrap text-right text-[13px] tabular-nums text-foreground">
                       {formatBytes(item.sizeBytes)}
                     </Td>
                     <Td>
                       <RiskBadge level={item.riskLevel} reason={item.reason} />
                     </Td>
-                    <Td className="max-w-80 truncate text-muted" title={item.path}>
+                    <Td className="max-w-80 truncate text-xs text-muted" title={item.path}>
                       {item.path}
                     </Td>
                     <Td>
@@ -165,7 +172,7 @@ export function CleanupPage() {
                           onClick={() => remove(item.path)}
                           title="Remove from queue"
                           aria-label="Remove from queue"
-                          className="rounded-md p-1.5 text-muted transition-colors duration-200 hover:bg-surface hover:text-foreground"
+                          className="rounded-btn p-1.5 text-muted transition-colors duration-(--motion-ms) hover:bg-card-hover hover:text-foreground"
                         >
                           <X className="h-4 w-4" aria-hidden="true" />
                         </button>
@@ -176,12 +183,18 @@ export function CleanupPage() {
               </tbody>
             </Table>
           </TableContainer>
-          <Card className="flex flex-wrap items-center justify-between gap-4 p-5">
-            <p className="text-sm">
-              {totals.count.toLocaleString()} items ·{" "}
-              <span className="font-medium">{formatBytes(totals.bytes)}</span>{" "}
-              <span className="text-muted">estimated recoverable</span>
-            </p>
+          <Card className="flex flex-wrap items-center justify-between gap-4 p-4">
+            <div>
+              <p className="text-[11px] uppercase tracking-wider text-muted">
+                Estimated recoverable
+              </p>
+              <p className="text-lg font-semibold text-foreground">
+                {totals.count.toLocaleString()} items ·{" "}
+                <span className="tabular-nums text-accent-secondary">
+                  {formatBytes(totals.bytes)}
+                </span>
+              </p>
+            </div>
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setPendingAction("trash")}
@@ -198,7 +211,7 @@ export function CleanupPage() {
               </Button>
             </div>
             {!advancedUnlocked ? (
-              <p className="w-full text-xs text-muted">
+              <p className="w-full text-[11px] text-muted">
                 Permanent deletion requires Advanced Cleanup.{" "}
                 <button
                   type="button"
@@ -257,14 +270,17 @@ export function CleanupPage() {
           ({formatBytes(totals.bytes)}). This action cannot be undone and the items
           will not be recoverable from the trash.
         </p>
-        <label className="mt-4 block text-xs text-muted" htmlFor="confirm-delete">
+        <label
+          className="mt-4 block text-[11px] uppercase tracking-wider text-muted"
+          htmlFor="confirm-delete"
+        >
           Type {PERMANENT_CONFIRM_PHRASE} to confirm
         </label>
-        <input
+        <Input
           id="confirm-delete"
           value={confirmPhrase}
           onChange={(event) => setConfirmPhrase(event.target.value)}
-          className="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none focus:border-primary"
+          className="mt-1.5 w-full"
           autoComplete="off"
         />
       </Dialog>

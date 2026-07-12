@@ -15,7 +15,7 @@ export function AddToQueueButton({ entry }: { entry: CleanupEntry }) {
       onClick={() => void addEntries([entry]).catch(() => undefined)}
       title={title}
       aria-label={title}
-      className="rounded-md p-1.5 text-muted transition-colors duration-200 hover:bg-surface hover:text-foreground disabled:pointer-events-none"
+      className="rounded-[5px] p-1 text-muted transition-colors duration-(--motion-ms) hover:bg-card-hover hover:text-foreground disabled:pointer-events-none"
     >
       {inQueue ? (
         <Check className="h-4 w-4 text-success" aria-hidden="true" />

@@ -46,7 +46,7 @@ export function FileTypesTable({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
           value={search}
@@ -54,7 +54,7 @@ export function FileTypesTable({
           placeholder="Search by extension…"
           className="w-72"
         />
-        <p className="ml-auto text-xs text-muted">
+        <p className="ml-auto text-[11px] uppercase tracking-wider text-muted">
           {sorted.length.toLocaleString()} of {fileTypes.length.toLocaleString()}{" "}
           types
         </p>
@@ -99,24 +99,24 @@ export function FileTypesTable({
             {sorted.map((stat) => (
               <tr
                 key={stat.extension || "(none)"}
-                className="transition-colors hover:bg-surface/60"
+                className="transition-colors duration-(--motion-ms) hover:bg-card-hover"
               >
-                <Td className="font-medium">
+                <Td className="text-[13px] font-medium text-foreground">
                   {stat.extension ? `.${stat.extension}` : "No extension"}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums">
+                <Td className="whitespace-nowrap text-right text-[13px] tabular-nums text-foreground">
                   {formatBytes(stat.totalBytes)}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums text-muted">
+                <Td className="whitespace-nowrap text-right text-xs tabular-nums text-muted">
                   {stat.fileCount.toLocaleString()}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums text-muted">
+                <Td className="whitespace-nowrap text-right text-xs tabular-nums text-muted">
                   {formatBytes(stat.fileCount > 0 ? stat.totalBytes / stat.fileCount : 0)}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums text-muted">
+                <Td className="whitespace-nowrap text-right text-xs tabular-nums text-muted">
                   {formatBytes(stat.largestFileBytes)}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums text-muted">
+                <Td className="whitespace-nowrap text-right text-xs tabular-nums text-muted">
                   {formatPercent(totalBytes > 0 ? stat.totalBytes / totalBytes : 0)}
                 </Td>
                 <Td>
@@ -126,7 +126,7 @@ export function FileTypesTable({
                       onClick={() => onDrilldown(stat.extension)}
                       title="Show files"
                       aria-label="Show files"
-                      className="rounded-md p-1.5 text-muted transition-colors duration-200 hover:bg-surface hover:text-foreground"
+                      className="rounded-[5px] p-1 text-muted transition-colors duration-(--motion-ms) hover:bg-card-hover hover:text-foreground"
                     >
                       <ListTree className="h-4 w-4" aria-hidden="true" />
                     </button>

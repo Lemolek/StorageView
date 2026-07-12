@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { CopyPathButton } from "@/components/ui/CopyPathButton";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { Select } from "@/components/ui/Select";
 import { SortableTh } from "@/components/ui/SortableTh";
 import { Table, TableContainer, Td, Th } from "@/components/ui/Table";
 import { AddToQueueButton } from "@/features/cleanup/AddToQueueButton";
@@ -54,7 +55,7 @@ export function LargestFilesTable({ files }: { files: FileEntry[] }) {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2">
         <SearchInput
           value={search}
@@ -62,19 +63,18 @@ export function LargestFilesTable({ files }: { files: FileEntry[] }) {
           placeholder="Search by name or path…"
           className="w-72"
         />
-        <select
+        <Select
           value={minSize}
           onChange={(event) => setMinSize(Number(event.target.value))}
           aria-label="Minimum size"
-          className="h-9 rounded-lg border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-primary"
         >
           {minSizeOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
-        </select>
-        <p className="ml-auto text-xs text-muted">
+        </Select>
+        <p className="ml-auto text-[11px] uppercase tracking-wider text-muted">
           {sorted.length.toLocaleString()} of {files.length.toLocaleString()} files
         </p>
       </div>
@@ -113,18 +113,24 @@ export function LargestFilesTable({ files }: { files: FileEntry[] }) {
           </thead>
           <tbody>
             {sorted.map((file) => (
-              <tr key={file.path} className="transition-colors hover:bg-surface/60">
-                <Td className="max-w-56 truncate font-medium" title={file.name}>
+              <tr
+                key={file.path}
+                className="transition-colors duration-(--motion-ms) hover:bg-card-hover"
+              >
+                <Td
+                  className="max-w-56 truncate text-[13px] font-medium text-foreground"
+                  title={file.name}
+                >
                   {file.name}
                 </Td>
-                <Td className="whitespace-nowrap text-right tabular-nums">
+                <Td className="whitespace-nowrap text-right text-[13px] tabular-nums text-foreground">
                   {formatBytes(file.sizeBytes)}
                 </Td>
-                <Td className="text-muted">{file.extension || "—"}</Td>
-                <Td className="whitespace-nowrap text-muted">
+                <Td className="text-xs text-muted">{file.extension || "—"}</Td>
+                <Td className="whitespace-nowrap text-xs text-muted">
                   {formatDateTime(file.modifiedMs)}
                 </Td>
-                <Td className="max-w-80 truncate text-muted" title={file.path}>
+                <Td className="max-w-80 truncate text-xs text-muted" title={file.path}>
                   {file.path}
                 </Td>
                 <Td>

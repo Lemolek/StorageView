@@ -8,7 +8,7 @@ export function RevealButton({ path, title }: { path: string; title: string }) {
       onClick={() => void revealPath(path).catch(() => undefined)}
       title={title}
       aria-label={title}
-      className="rounded-md p-1.5 text-muted transition-colors duration-200 hover:bg-surface hover:text-foreground"
+      className="rounded-[5px] p-1 text-muted transition-colors duration-(--motion-ms) hover:bg-card-hover hover:text-foreground"
     >
       <FolderOpen className="h-4 w-4" aria-hidden="true" />
     </button>

@@ -54,19 +54,19 @@ export function RecycleBinCard() {
   }
 
   return (
-    <Card className="mb-6 flex flex-wrap items-center justify-between gap-4 p-5">
+    <Card className="mb-6 flex flex-wrap items-center justify-between gap-4 p-4">
       <div className="flex min-w-0 items-start gap-3">
-        <Trash2 className="mt-0.5 h-5 w-5 shrink-0 text-muted" aria-hidden="true" />
+        <Trash2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
         <div className="min-w-0">
-          <h2 className="text-base font-medium">Recycle Bin</h2>
-          <p className="mt-1 text-sm text-muted">
+          <h2 className="text-sm font-semibold text-foreground">Recycle Bin</h2>
+          <p className="mt-1 text-[13px] text-muted">
             {unavailable
               ? "Recycle Bin status unavailable."
               : summary
                 ? `${summary.itemCount.toLocaleString()} items · ${formatBytes(summary.totalBytes)}`
                 : "Reading Recycle Bin…"}
           </p>
-          {message ? <p className="mt-1 text-sm text-muted">{message}</p> : null}
+          {message ? <p className="mt-1 text-[11px] text-muted">{message}</p> : null}
         </div>
       </div>
       <Button

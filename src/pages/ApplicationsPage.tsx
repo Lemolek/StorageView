@@ -125,9 +125,11 @@ export function ApplicationsPage() {
         description="Installed applications with size, uninstall and leftover analysis."
       />
       {error ? (
-        <Card className="mb-6 border-danger/40 p-5">
-          <p className="text-sm font-medium">Unable to read installed applications</p>
-          <p className="mt-1 text-sm text-muted">{error}</p>
+        <Card className="mb-6 border-danger/50 p-4">
+          <p className="text-sm font-medium text-foreground">
+            Unable to read installed applications
+          </p>
+          <p className="mt-1 text-xs text-muted">{error}</p>
         </Card>
       ) : null}
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -143,7 +145,7 @@ export function ApplicationsPage() {
         </p>
       </div>
       {apps === null && !error ? (
-        <Card className="h-40 animate-pulse p-5" />
+        <Card className="h-40 animate-pulse p-4" />
       ) : sorted.length === 0 ? (
         <EmptyState
           icon={Package}
@@ -192,23 +194,31 @@ export function ApplicationsPage() {
                   }
                   className={
                     app.id === selectedId
-                      ? "cursor-pointer bg-surface/80"
-                      : "cursor-pointer transition-colors hover:bg-surface/60"
+                      ? "cursor-pointer bg-primary/10 shadow-[inset_2px_0_0_var(--primary)]"
+                      : "cursor-pointer transition-colors duration-(--motion-ms) hover:bg-surface/60"
                   }
                 >
-                  <Td className="max-w-64 truncate font-medium" title={app.name}>
+                  <Td
+                    className="max-w-64 truncate py-2 text-[13px] font-medium text-foreground"
+                    title={app.name}
+                  >
                     {app.name}
                   </Td>
-                  <Td className="max-w-48 truncate text-muted" title={app.publisher ?? undefined}>
+                  <Td
+                    className="max-w-48 truncate py-2 text-[13px] text-muted"
+                    title={app.publisher ?? undefined}
+                  >
                     {app.publisher ?? "—"}
                   </Td>
-                  <Td className="whitespace-nowrap text-muted">{app.version ?? "—"}</Td>
-                  <Td className="whitespace-nowrap text-right tabular-nums">
+                  <Td className="whitespace-nowrap py-2 text-[13px] text-muted">
+                    {app.version ?? "—"}
+                  </Td>
+                  <Td className="whitespace-nowrap py-2 text-right text-[13px] tabular-nums text-foreground">
                     {app.estimatedSizeBytes != null
                       ? formatBytes(app.estimatedSizeBytes)
                       : "—"}
                   </Td>
-                  <Td className="whitespace-nowrap text-muted">
+                  <Td className="whitespace-nowrap py-2 text-[13px] text-muted">
                     {formatDateTime(app.installDateMs)}
                   </Td>
                 </tr>
@@ -219,14 +229,16 @@ export function ApplicationsPage() {
       )}
       {selected ? (
         <div className="space-y-4">
-          <Card className="flex flex-wrap items-center justify-between gap-4 p-5">
+          <Card className="flex flex-wrap items-center justify-between gap-4 p-4">
             <div className="min-w-0">
-              <h3 className="truncate text-sm font-medium">{selected.name}</h3>
-              <p className="mt-1 truncate text-xs text-muted">
+              <h3 className="truncate text-sm font-semibold text-foreground">
+                {selected.name}
+              </h3>
+              <p className="mt-1 truncate text-[11px] text-muted">
                 {selected.installLocation ?? "Install location unknown"}
               </p>
               {uninstallError ? (
-                <p className="mt-1 text-xs text-danger">{uninstallError}</p>
+                <p className="mt-1 text-[11px] text-danger">{uninstallError}</p>
               ) : null}
             </div>
             <div className="flex items-center gap-2">
