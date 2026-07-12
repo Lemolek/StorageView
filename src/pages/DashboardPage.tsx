@@ -24,7 +24,7 @@ export function DashboardPage() {
     return (
       <>
         <PageHeader
-          title="Dashboard"
+          title="Overview"
           description="High-level overview of storage usage, recent scans and cleanup recommendations."
         />
         <EmptyState
@@ -46,7 +46,7 @@ export function DashboardPage() {
   return (
     <>
       <PageHeader
-        title="Dashboard"
+        title="Overview"
         description="High-level overview of storage usage, recent scans and cleanup recommendations."
         actions={
           <Button size="sm" onClick={() => navigate("/storage")}>
