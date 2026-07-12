@@ -5,6 +5,8 @@ use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{AppHandle, Manager};
 
+use crate::core::error::AppError;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum RiskLevel {
@@ -453,6 +455,89 @@ fn candidate_locations() -> Vec<CandidateLocation> {
             path: joined(&home, ".cache"),
         },
     ]
+}
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RecycleBinSummary {
+    pub item_count: u64,
+    pub total_bytes: u64,
+}
+
+#[cfg(any(
+    target_os = "windows",
+    all(
+        unix,
+        not(target_os = "macos"),
+        not(target_os = "ios"),
+        not(target_os = "android")
+    )
+))]
+pub fn recycle_bin_summary() -> Result<RecycleBinSummary, AppError> {
+    let items = trash::os_limited::list()
+        .map_err(|error| AppError::Internal(format!("failed to read the recycle bin: {error}")))?;
+    let item_count = items.len() as u64;
+    let mut total_bytes = 0u64;
+    for item in &items {
+        if let Ok(metadata) = trash::os_limited::metadata(item) {
+            if let trash::TrashItemSize::Bytes(bytes) = metadata.size {
+                total_bytes = total_bytes.saturating_add(bytes);
+            }
+        }
+    }
+    Ok(RecycleBinSummary {
+        item_count,
+        total_bytes,
+    })
+}
+
+#[cfg(not(any(
+    target_os = "windows",
+    all(
+        unix,
+        not(target_os = "macos"),
+        not(target_os = "ios"),
+        not(target_os = "android")
+    )
+)))]
+pub fn recycle_bin_summary() -> Result<RecycleBinSummary, AppError> {
+    Err(AppError::Internal(
+        "recycle bin summary is not supported on this platform".to_string(),
+    ))
+}
+
+#[cfg(any(
+    target_os = "windows",
+    all(
+        unix,
+        not(target_os = "macos"),
+        not(target_os = "ios"),
+        not(target_os = "android")
+    )
+))]
+pub fn empty_recycle_bin() -> Result<(), AppError> {
+    let items = trash::os_limited::list()
+        .map_err(|error| AppError::Internal(format!("failed to read the recycle bin: {error}")))?;
+    if items.is_empty() {
+        return Ok(());
+    }
+    trash::os_limited::purge_all(items)
+        .map_err(|error| AppError::Internal(format!("failed to empty the recycle bin: {error}")))
+}
+
+#[cfg(not(any(
+    target_os = "windows",
+    all(
+        unix,
+        not(target_os = "macos"),
+        not(target_os = "ios"),
+        not(target_os = "android")
+    )
+)))]
+pub fn empty_recycle_bin() -> Result<(), AppError> {
+    Err(AppError::Internal(
+        "recycle bin emptying is not supported on this platform".to_string(),
+    ))
 }
 
 fn directory_size(path: &Path) -> u64 {

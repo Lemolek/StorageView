@@ -4,7 +4,10 @@ use std::sync::Arc;
 use tauri::{AppHandle, State};
 
 use crate::core::error::AppError;
-use crate::scanning::{collect_extension_files, run_scan, FileEntry, ScanResult, ScanState};
+use crate::scanning::{
+    browse_directory as browse_directory_impl, collect_extension_files, run_scan, BrowseListing,
+    FileEntry, ScanResult, ScanState,
+};
 
 #[tauri::command]
 pub async fn start_scan(
@@ -48,6 +51,20 @@ pub async fn list_extension_files(
     .map_err(|error| AppError::Internal(error.to_string()));
     scan_state.running.store(false, Ordering::SeqCst);
     outcome?
+}
+
+#[tauri::command]
+pub async fn browse_directory(
+    state: State<'_, Arc<ScanState>>,
+    path: String,
+    refresh: bool,
+) -> Result<BrowseListing, AppError> {
+    let scan_state = state.inner().clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        browse_directory_impl(&scan_state, &PathBuf::from(path), refresh)
+    })
+    .await
+    .map_err(|error| AppError::Internal(error.to_string()))?
 }
 
 #[tauri::command]

@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Mutex;
 use std::time::{Instant, SystemTime, UNIX_EPOCH};
 use tauri::{AppHandle, Emitter};
 
@@ -27,6 +28,7 @@ const AGE_BUCKET_LABELS: [&str; 7] = [
 pub struct ScanState {
     pub cancelled: AtomicBool,
     pub running: AtomicBool,
+    pub browse_cache: Mutex<HashMap<String, BrowseListing>>,
 }
 
 #[derive(Clone, Serialize)]
@@ -326,6 +328,142 @@ impl Scanner<'_> {
     }
 }
 
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BrowseEntry {
+    pub name: String,
+    pub path: String,
+    pub kind: String,
+    pub size_bytes: u64,
+    pub file_count: Option<u64>,
+    pub modified_ms: Option<u64>,
+    pub percent_of_parent: f64,
+}
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BrowseListing {
+    pub path: String,
+    pub parent_path: Option<String>,
+    pub total_bytes: u64,
+    pub entries: Vec<BrowseEntry>,
+}
+
+pub fn browse_directory(
+    state: &ScanState,
+    path: &Path,
+    refresh: bool,
+) -> Result<BrowseListing, AppError> {
+    let key = browse_cache_key(path);
+    if !refresh {
+        let cache = state
+            .browse_cache
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        if let Some(listing) = cache.get(&key) {
+            return Ok(listing.clone());
+        }
+    }
+    if !path.is_dir() {
+        return Err(AppError::PathNotFound(path.display().to_string()));
+    }
+    let dir_entries = fs::read_dir(path).map_err(AppError::Io)?;
+    let mut entries: Vec<BrowseEntry> = Vec::new();
+    for entry in dir_entries.flatten() {
+        let Ok(file_type) = entry.file_type() else {
+            continue;
+        };
+        if file_type.is_symlink() {
+            continue;
+        }
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let entry_path = entry.path();
+        if file_type.is_dir() {
+            let totals = browse_folder_totals(state, &entry_path)?;
+            entries.push(BrowseEntry {
+                name,
+                path: entry_path.display().to_string(),
+                kind: "folder".to_string(),
+                size_bytes: totals.bytes,
+                file_count: Some(totals.files),
+                modified_ms: entry.metadata().ok().as_ref().and_then(modified_ms),
+                percent_of_parent: 0.0,
+            });
+        } else if file_type.is_file() {
+            let Ok(metadata) = entry.metadata() else {
+                continue;
+            };
+            entries.push(BrowseEntry {
+                name,
+                path: entry_path.display().to_string(),
+                kind: "file".to_string(),
+                size_bytes: metadata.len(),
+                file_count: None,
+                modified_ms: modified_ms(&metadata),
+                percent_of_parent: 0.0,
+            });
+        }
+    }
+    let total_bytes: u64 = entries.iter().map(|entry| entry.size_bytes).sum();
+    for entry in &mut entries {
+        entry.percent_of_parent = if total_bytes > 0 {
+            (entry.size_bytes as f64 / total_bytes as f64) * 100.0
+        } else {
+            0.0
+        };
+    }
+    entries.sort_by(|a, b| {
+        b.size_bytes
+            .cmp(&a.size_bytes)
+            .then_with(|| a.name.cmp(&b.name))
+    });
+    let listing = BrowseListing {
+        path: path.display().to_string(),
+        parent_path: path.parent().map(|parent| parent.display().to_string()),
+        total_bytes,
+        entries,
+    };
+    let mut cache = state
+        .browse_cache
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    cache.insert(key, listing.clone());
+    Ok(listing)
+}
+
+fn browse_cache_key(path: &Path) -> String {
+    path.display().to_string().replace('/', "\\").to_lowercase()
+}
+
+fn browse_folder_totals(state: &ScanState, path: &Path) -> Result<DirectoryTotals, AppError> {
+    if state.cancelled.load(Ordering::Relaxed) {
+        return Err(AppError::Cancelled);
+    }
+    let mut totals = DirectoryTotals::default();
+    let Ok(entries) = fs::read_dir(path) else {
+        return Ok(totals);
+    };
+    for entry in entries.flatten() {
+        let Ok(file_type) = entry.file_type() else {
+            continue;
+        };
+        if file_type.is_symlink() {
+            continue;
+        }
+        if file_type.is_dir() {
+            let sub_totals = browse_folder_totals(state, &entry.path())?;
+            totals.bytes += sub_totals.bytes;
+            totals.files += sub_totals.files;
+        } else if file_type.is_file() {
+            if let Ok(metadata) = entry.metadata() {
+                totals.bytes += metadata.len();
+                totals.files += 1;
+            }
+        }
+    }
+    Ok(totals)
+}
+
 pub fn collect_extension_files(
     state: &ScanState,
     root: &Path,
@@ -419,8 +557,97 @@ fn modified_ms(metadata: &fs::Metadata) -> Option<u64> {
 
 #[cfg(test)]
 mod tests {
-    use super::{collect_extension_files, extension_of, ScanState, TopEntries};
+    use super::{browse_directory, collect_extension_files, extension_of, ScanState, TopEntries};
+    use crate::core::error::AppError;
     use std::fs;
+    use std::sync::atomic::Ordering;
+
+    #[test]
+    fn browse_directory_aggregates_sizes_and_percentages() {
+        let root = std::env::temp_dir().join("storageview-test-browse-agg");
+        let _ = fs::remove_dir_all(&root);
+        let sub = root.join("sub");
+        let nested = sub.join("nested");
+        fs::create_dir_all(&nested).unwrap();
+        fs::write(root.join("a.txt"), vec![0u8; 100]).unwrap();
+        fs::write(sub.join("b.bin"), vec![0u8; 300]).unwrap();
+        fs::write(nested.join("c.dat"), vec![0u8; 100]).unwrap();
+
+        let state = ScanState::default();
+        let listing = browse_directory(&state, &root, false).unwrap();
+
+        assert_eq!(listing.path, root.display().to_string());
+        assert!(listing.parent_path.is_some());
+        assert_eq!(listing.total_bytes, 500);
+        assert_eq!(listing.entries.len(), 2);
+        let folder = &listing.entries[0];
+        assert_eq!(folder.name, "sub");
+        assert_eq!(folder.kind, "folder");
+        assert_eq!(folder.size_bytes, 400);
+        assert_eq!(folder.file_count, Some(2));
+        assert!((folder.percent_of_parent - 80.0).abs() < 1e-9);
+        let file = &listing.entries[1];
+        assert_eq!(file.name, "a.txt");
+        assert_eq!(file.kind, "file");
+        assert_eq!(file.size_bytes, 100);
+        assert_eq!(file.file_count, None);
+        assert!((file.percent_of_parent - 20.0).abs() < 1e-9);
+
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn browse_directory_serves_cache_until_refresh() {
+        let root = std::env::temp_dir().join("storageview-test-browse-cache");
+        let _ = fs::remove_dir_all(&root);
+        fs::create_dir_all(&root).unwrap();
+        fs::write(root.join("first.bin"), vec![0u8; 100]).unwrap();
+
+        let state = ScanState::default();
+        let initial = browse_directory(&state, &root, false).unwrap();
+        assert_eq!(initial.total_bytes, 100);
+        assert_eq!(initial.entries.len(), 1);
+
+        fs::write(root.join("second.bin"), vec![0u8; 50]).unwrap();
+        let cached = browse_directory(&state, &root, false).unwrap();
+        assert_eq!(cached.total_bytes, 100);
+        assert_eq!(cached.entries.len(), 1);
+
+        let fresh = browse_directory(&state, &root, true).unwrap();
+        assert_eq!(fresh.total_bytes, 150);
+        assert_eq!(fresh.entries.len(), 2);
+
+        let recached = browse_directory(&state, &root, false).unwrap();
+        assert_eq!(recached.total_bytes, 150);
+
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn browse_directory_cancels_during_size_walk() {
+        let root = std::env::temp_dir().join("storageview-test-browse-cancel");
+        let _ = fs::remove_dir_all(&root);
+        let sub = root.join("sub");
+        fs::create_dir_all(&sub).unwrap();
+        fs::write(sub.join("payload.bin"), vec![0u8; 64]).unwrap();
+
+        let state = ScanState::default();
+        state.cancelled.store(true, Ordering::Relaxed);
+        let outcome = browse_directory(&state, &root, false);
+        assert!(matches!(outcome, Err(AppError::Cancelled)));
+
+        fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn browse_directory_rejects_missing_path() {
+        let root = std::env::temp_dir().join("storageview-test-browse-missing");
+        let _ = fs::remove_dir_all(&root);
+
+        let state = ScanState::default();
+        let outcome = browse_directory(&state, &root, false);
+        assert!(matches!(outcome, Err(AppError::PathNotFound(_))));
+    }
 
     #[test]
     fn collect_extension_files_finds_matching_files_by_size() {
