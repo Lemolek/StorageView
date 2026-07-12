@@ -5,6 +5,7 @@ import { useScanStore } from "@/features/storage/scanStore";
 import { isDesktopRuntime } from "@/lib/api/app";
 import { onScanProgress } from "@/lib/api/scanning";
 import { Sidebar } from "./Sidebar";
+import { TopBar } from "./TopBar";
 
 export function AppShell() {
   useEffect(() => {
@@ -22,11 +23,14 @@ export function AppShell() {
   return (
     <div className="flex h-screen bg-background text-foreground">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-6xl px-8 py-8">
-          <Outlet />
-        </div>
-      </main>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <TopBar />
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-[1400px] p-6">
+            <Outlet />
+          </div>
+        </main>
+      </div>
       <CommandMenu />
     </div>
   );

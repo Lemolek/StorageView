@@ -9,10 +9,14 @@ interface StatCardProps {
 
 export function StatCard({ label, value, hint }: StatCardProps) {
   return (
-    <Card className="p-5">
-      <p className="text-sm text-muted">{label}</p>
-      <p className="mt-1 truncate text-2xl font-semibold tracking-tight">{value}</p>
-      {hint ? <p className="mt-1 truncate text-xs text-muted">{hint}</p> : null}
+    <Card interactive className="p-4">
+      <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
+        {label}
+      </p>
+      <p className="mt-1.5 truncate text-xl font-semibold tracking-tight text-foreground">
+        {value}
+      </p>
+      {hint ? <p className="mt-1 truncate text-[11px] text-muted/80">{hint}</p> : null}
     </Card>
   );
 }

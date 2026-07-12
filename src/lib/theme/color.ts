@@ -41,3 +41,17 @@ export function contrastRatio(first: string, second: string): number {
 export function isDarkColor(hex: string): boolean {
   return relativeLuminance(hex) < 0.35;
 }
+
+export function mixHex(base: string, target: string, amount: number): string {
+  const from = hexToRgb(base);
+  const to = hexToRgb(target);
+  if (!from || !to) {
+    return base;
+  }
+  const clamped = Math.min(1, Math.max(0, amount));
+  const channel = (index: number) =>
+    Math.round(from[index]! + (to[index]! - from[index]!) * clamped);
+  return `#${[channel(0), channel(1), channel(2)]
+    .map((value) => value.toString(16).padStart(2, "0"))
+    .join("")}`;
+}

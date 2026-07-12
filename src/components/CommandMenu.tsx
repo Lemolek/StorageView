@@ -9,6 +9,12 @@ import { isDesktopRuntime } from "@/lib/api/app";
 import { selectFolder } from "@/lib/api/dialog";
 import { cn } from "@/lib/utils/cn";
 
+const OPEN_EVENT = "storageview:command-menu";
+
+export function openCommandMenu(): void {
+  window.dispatchEvent(new CustomEvent(OPEN_EVENT));
+}
+
 interface CommandItem {
   id: string;
   label: string;
@@ -38,8 +44,17 @@ export function CommandMenu() {
         setActiveIndex(0);
       }
     };
+    const handleOpen = () => {
+      setOpen(true);
+      setQuery("");
+      setActiveIndex(0);
+    };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener(OPEN_EVENT, handleOpen);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener(OPEN_EVENT, handleOpen);
+    };
   }, []);
 
   useEffect(() => {
@@ -112,13 +127,17 @@ export function CommandMenu() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-24">
-      <div className="absolute inset-0 bg-black/60" onClick={close} aria-hidden="true" />
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-28">
+      <div className="absolute inset-0 bg-black/70" onClick={close} aria-hidden="true" />
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Command menu"
-        className="relative z-10 w-full max-w-lg overflow-hidden rounded-xl border border-border bg-card shadow-xl"
+        style={{
+          backgroundColor: `color-mix(in srgb, var(--card) calc(var(--glass-alpha) * 100%), transparent)`,
+          backdropFilter: `blur(var(--glass-blur))`,
+        }}
+        className="dialog-in relative z-10 w-full max-w-lg overflow-hidden rounded-dlg border border-border-strong shadow-[0_0_0_1px_rgba(255,255,255,0.07),0_0_32px_rgba(var(--glow-rgb),0.16)]"
       >
         <input
           ref={inputRef}
@@ -142,11 +161,11 @@ export function CommandMenu() {
             }
           }}
           placeholder="Type a command or page name…"
-          className="w-full border-b border-border bg-transparent px-4 py-3.5 text-sm text-foreground outline-none placeholder:text-muted"
+          className="w-full border-b border-border bg-transparent px-4 py-3 text-sm text-foreground caret-foreground outline-none placeholder:text-muted/70"
         />
-        <ul className="max-h-80 overflow-y-auto p-2" role="listbox">
+        <ul className="max-h-80 overflow-y-auto p-1.5" role="listbox">
           {filtered.length === 0 ? (
-            <li className="px-3 py-6 text-center text-sm text-muted">
+            <li className="px-3 py-5 text-center text-xs text-muted">
               No matching commands.
             </li>
           ) : (
@@ -157,15 +176,17 @@ export function CommandMenu() {
                   onClick={() => runItem(item)}
                   onMouseEnter={() => setActiveIndex(index)}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-100",
+                    "flex w-full items-center gap-2.5 rounded-btn px-2.5 py-1.5 text-left text-[13px] transition-colors duration-100",
                     index === activeIndex
-                      ? "bg-surface text-foreground"
+                      ? "bg-primary/12 text-foreground shadow-[inset_2px_0_0_var(--primary)]"
                       : "text-muted",
                   )}
                 >
-                  <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <item.icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                   <span className="flex-1">{item.label}</span>
-                  <span className="text-xs text-muted">{item.hint}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-muted/70">
+                    {item.hint}
+                  </span>
                 </button>
               </li>
             ))

@@ -17,7 +17,7 @@ export function SearchInput({
   return (
     <div className={cn("relative", className)}>
       <Search
-        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+        className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted"
         aria-hidden="true"
       />
       <input
@@ -25,7 +25,7 @@ export function SearchInput({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="h-9 w-full rounded-lg border border-border bg-surface pl-9 pr-3 text-sm text-foreground outline-none transition-colors duration-200 placeholder:text-muted focus:border-primary"
+        className="h-8 w-full rounded-input border border-border bg-background pl-8 pr-2.5 text-sm text-foreground outline-none transition-all duration-(--motion-ms) placeholder:text-muted/70 focus:border-primary/70 focus:glow-accent-soft"
       />
     </div>
   );

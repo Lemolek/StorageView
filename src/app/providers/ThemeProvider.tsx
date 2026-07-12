@@ -1,4 +1,4 @@
-import {
+﻿import {
   createContext,
   useContext,
   useEffect,
@@ -8,7 +8,7 @@ import {
 } from "react";
 import { applyTheme } from "@/lib/theme/applyTheme";
 import { isDarkColor } from "@/lib/theme/color";
-import { builtInThemes, LIGHT_ID, NOIR_ID } from "@/lib/theme/themes";
+import { builtInThemes, LIGHT_ID, HOLO_ID } from "@/lib/theme/themes";
 import type { Theme as ThemeDefinition, ThemeTokens } from "@/types/theme";
 
 export type Theme = "dark" | "light";
@@ -61,7 +61,7 @@ function readActiveThemeId(): string {
     return stored;
   }
   const legacy = window.localStorage.getItem(LEGACY_KEY);
-  return legacy === "light" ? LIGHT_ID : NOIR_ID;
+  return legacy === "light" ? LIGHT_ID : HOLO_ID;
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
@@ -97,9 +97,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       : "light";
     return {
       theme: mode,
-      setTheme: (target) => setActiveThemeId(target === "dark" ? NOIR_ID : LIGHT_ID),
+      setTheme: (target) => setActiveThemeId(target === "dark" ? HOLO_ID : LIGHT_ID),
       toggleTheme: () =>
-        setActiveThemeId(mode === "dark" ? LIGHT_ID : NOIR_ID),
+        setActiveThemeId(mode === "dark" ? LIGHT_ID : HOLO_ID),
       themes,
       activeTheme,
       setActiveTheme: (id) => {
@@ -120,7 +120,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       },
       deleteCustomTheme: (id) => {
         setCustomThemes((current) => current.filter((entry) => entry.id !== id));
-        setActiveThemeId((current) => (current === id ? NOIR_ID : current));
+        setActiveThemeId((current) => (current === id ? HOLO_ID : current));
       },
       duplicateTheme: (id, newName) => {
         const source = themes.find((entry) => entry.id === id);
