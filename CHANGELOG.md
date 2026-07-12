@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.0
+
+Feature expansion release.
+
+- Interactive treemap explorer with drill-down, breadcrumbs, back/forward navigation, rescan and per-row usage bars
+- Storage hub with consolidated tabs: Treemap, Largest Files, Largest Folders, File Types, Duplicates, Insights
+- Filesystem search with wildcard and regex modes, extension, size and date filters, hidden-file toggle, streaming results and cancellation
+- Applications view: installed application inventory from the Windows registry, native uninstall and conservative leftover analysis with confidence levels
+- Recycle Bin summary and guarded empty action on the Cleanup page
+- Token-based theme engine: built-in Noir and Light themes, custom theme editor with live preview, contrast warnings and validated theme import/export
+- Signed automatic updates: check, download, install and restart from Settings
+- Overview navigation label replacing Dashboard
+
 ## 0.6.0
 
 Rebrand release.
